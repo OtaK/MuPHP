@@ -1,0 +1,12 @@
+RewriteEngine On
+RewriteBase /TakPHPLib/
+
+# Medias
+RewriteRule ^.+/media/(.+)$ media/$1 [L]
+
+# Pages avec queries (args GET)
+RewriteCond %{QUERY_STRING} (.+)
+RewriteRule ^(\w+)/$ index.php?module=$1&%1 [L,QSA]
+
+# Autres pages
+RewriteRule ^(\w+)/?$ index.php?module=$1 [L,QSA]

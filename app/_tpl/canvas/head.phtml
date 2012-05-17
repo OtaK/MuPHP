@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html lang="fr-FR">
+<head>
+    <title><?php echo SITE_NAME; ?> :: <?php echo (isset($modules[$pageName])) ? $modules[$pageName]['pageTitle'] : "Erreur"; ?></title>
+    <meta charset="UTF-8">
+    <meta name="description" content="<?php echo SITE_DESCRIPTION; ?>" />
+    <meta name="keywords" content="<?php echo SITE_KEYWORDS; ?>" />
+    <meta name="revisit-after" content="1 days" />
+    <meta name="robots" content="all" />
+    <!-- <link rel="icon" type="image/ico" href="favicon.ico" /> -->
+    <!--[if IE]><link rel="shortcut icon" type="image/x-icon" href="favicon.ico" /><![endif]-->
+    <link rel="stylesheet" type="text/css" href="media/css/base.css" />
+    <!--[if lt IE 9]>
+		<script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+<span id="jsIncludes"></span>
+<header id="header">
+    <div id="logo"><a href="<?php echo BASE_URL; ?>"><img src="media/img/logo.jpg" alt="LOGO SITE" /></a></div>
+</header>
+<div id="content">
