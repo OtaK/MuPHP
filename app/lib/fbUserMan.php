@@ -51,16 +51,18 @@
          *      'apps' : { JSON REPONSE CONTAINED IN THE /me/accounts QUERY }
          * }
          *
-         * @param string $jsonResponse JSON Object from FB login response
+         * @param string|array $responseData    JSON Object from FB login response (or array
+         * @param bool         $isArray         defaults to false, set to true if $responseData is an array
          * @throws fbUserManNotConfiguredException
          */
-        public function __construct($jsonResponse)
+        public function __construct($responseData, $isArray = false)
         {
             if (self::FB_APPID === '') // Check if class has been properly configured
                 throw new fbUserManNotConfiguredException();
 
             // Decode data from FB JSON Response
-            $fbData = json_decode($jsonResponse, true);
+            $fbData = $isArray ? json_decode($responseData, true) : $responseData;
+
             $this->fbUserId = $fbData['user']['id'];
 
             // Insert / Update FB User data into DB associated user account
