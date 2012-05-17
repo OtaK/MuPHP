@@ -53,6 +53,7 @@
          *
          * @param string|array $responseData    JSON Object from FB login response (or array
          * @param bool         $isArray         defaults to false, set to true if $responseData is an array
+         * @throws \Exception
          * @throws fbUserManNotConfiguredException
          */
         public function __construct($responseData, $isArray = false)
@@ -67,7 +68,8 @@
 
             // Insert / Update FB User data into DB associated user account
             $internalData = $this->isRegistered();
-            $this->registerOrUpdate($fbData, $internalData);
+            if (!$this->registerOrUpdate($fbData, $internalData))
+                throw new \Exception(\TakPHPLib\DB\dbMan::get_instance()->error);
 
             // Call to parent userMan methods
             parent::__construct($internalData['user_id'], $internalData['user_email'], $internalData['user_pass'], $internalData['user_status']);
@@ -105,23 +107,25 @@
         /**
          * @param array $fbData         FB data from JSON Response
          * @param array &$internalData  Internal data after insert into DB
-         * @returns void
+         * @return bool|\TakPHPLib\DB\dbResult
          */
         protected function registerOrUpdate(array $fbData, array &$internalData)
         {
             $userStatus = 'USER';
-            for ($i = 0, $l = count($fbData['apps']['data']); $i < $l; ++$i)
+            foreach ($fbData['apps']['data'] as $curApp)
             {
-                if (self::FB_APPID === $fbData['apps']['data'][$i])
+                if (self::FB_APPID == $curApp['id'])
                 {
                     $userStatus = 'ADMIN';
                     break;
                 }
             }
 
-            $userCity = substr($fbData['user']['location']['name'], 0, strpos($fbData['user']['location']['name'], ',') + 1);
+            $userCity = explode(',', $fbData['user']['location']['name']);
+            $userCity = $userCity[0];
 
-            \TakPHPLib\DB\dbMan::get_instance()->query('
+
+            $res = \TakPHPLib\DB\dbMan::get_instance()->query('
                 INSERT INTO users
                 SET
                     user_email = \'%1$s\',
@@ -153,10 +157,13 @@
                 'user_first_name'   => $fbData['user']['first_name'],
                 'user_last_name'    => $fbData['user']['last_name'],
                 'user_city'         => $userCity,
-                'user_status'       => $userStatus
+                'user_status'       => $userStatus,
+                'user_pass'         => 'NULL'
             ));
 
             if ($register)
                 $internalData['user_id'] = \TakPHPLib\DB\dbMan::get_instance()->insert_id;
+
+            return $res;
         }
     }
