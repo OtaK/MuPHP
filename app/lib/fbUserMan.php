@@ -124,7 +124,6 @@
             $userCity = explode(',', $fbData['user']['location']['name']);
             $userCity = $userCity[0];
 
-
             $res = \TakPHPLib\DB\dbMan::get_instance()->query('
                 INSERT INTO users
                 SET

@@ -17,21 +17,21 @@
      *
      */
 
-    # Appel de toutes les pages(Views et Controllers) pour construire le site
-    include_once 'app/cfg/define.php'; # calling cfg file
+    // Appel de toutes les pages(Views et Controllers) pour construire le site
+    include_once 'app/cfg/define.php'; // calling cfg file
 
     $modules = getModules();
-    $acl = new \TakPHPLib\Auth\rightsMan($modules); # rights management object
+    $acl = new \TakPHPLib\Auth\rightsMan($modules); // rights management object
     session_start();
 
-    $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); # null check & default page
+    $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
     if ($auth = $acl->isAuthorized($pageName))
-        include __DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'; # controller
+        include __DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'; // controller
 
-    include __DIR__.'/app/_tpl/canvas/head.phtml'; # header
+    include __DIR__.'/app/_tpl/canvas/head.phtml'; // header
 
     if ($auth)
-        include __DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml'; # view
-    else # error if hacker detected
+        include __DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml'; // view
+    else // error if hacker detected
         echo "<h2>La page demandée n'existe pas ou vous n'êtes pas autorisé à la voir.</h2>";
-    include __DIR__.'/app/_tpl/canvas/foot.phtml'; # footer
+    include __DIR__.'/app/_tpl/canvas/foot.phtml'; // footer

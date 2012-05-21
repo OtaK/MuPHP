@@ -298,7 +298,7 @@
 					}
 				}
 			}
-			asort($this->_counts, SORT_NUMERIC | SORT_DESC); # tri par pertinence décroissante
+			asort($this->_counts, SORT_NUMERIC | SORT_DESC); // tri par pertinence décroissante
 		}
 
 		/**
@@ -308,10 +308,10 @@
 		private function reorderResults()
 		{
 			if (!array_sum($this->_counts)) return;
-			$tmp = array(); # init array temporaire
-			foreach ($this->_counts as $i => $cpt) # réorganisation des résultats en fonction de la pertinence
+			$tmp = array(); // init array temporaire
+			foreach ($this->_counts as $i => $cpt) // réorganisation des résultats en fonction de la pertinence
 				$tmp[] = $this->_results[$i];
-			$this->_results = $tmp; # réassignation des résultats vers le bon array
+			$this->_results = $tmp; // réassignation des résultats vers le bon array
 		}
 
 		/**
@@ -325,8 +325,8 @@
 
 			$select = 'SELECT ';
 			$order  = array();
-			# Constructing the SELECT statement
-			if (isset($this->_resultLinkId)) # if we have an id field
+			// Constructing the SELECT statement
+			if (isset($this->_resultLinkId)) // if we have an id field
 				$select .= "{$this->_resultLinkId['table']}.{$this->_resultLinkId['db']}, ";
 
 			foreach ($this->_displayedFields as $i => $val)
@@ -346,10 +346,10 @@
 						$tables[] = $val['dbTable'];
 				}
 			}
-			$select = substr($select, 0, -2); # removing the last comma + space
+			$select = substr($select, 0, -2); // removing the last comma + space
 			$q .= $select;
 
-			# WHERE statement
+			// WHERE statement
 			$where = "";
 			foreach ($this->_searchFields as $val)
 			{
@@ -363,7 +363,7 @@
 				else $where .= "{$val['dbTable']}.{$val['db']} IN ({$val['value']})";
 			}
 
-			# FROM statement
+			// FROM statement
 			$from = "\nFROM ";
 			$i    = 0;
 			foreach ($this->_joins as $table => $using)
@@ -376,7 +376,7 @@
 			}
 			$q .= $from;
 
-			# Keywords inside WHERE statement
+			// Keywords inside WHERE statement
 			$l = count($this->_keywords);
 			if ($l && !empty($this->_keywordDbField))
 			{
@@ -392,7 +392,7 @@
 			}
 			$q .= $where;
 
-			# ORDER BY statement
+			// ORDER BY statement
 			if (count($order))
 			{
 				$q .= "\nORDER BY ";
@@ -401,7 +401,7 @@
 				$q = substr($q, 0, -2);
 			}
 
-			# LIMIT statement
+			// LIMIT statement
 			if (isset($this->_limits))
 				$q .= "\nLIMIT {$this->_limits['offset']}, {$this->_limits['count']}";
 

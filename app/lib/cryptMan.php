@@ -42,10 +42,10 @@
     /*
      * To generate an IV, display this page in your browser
      */
-    # live data encryption constants
+    // live data encryption constants
     define('ENCRYPTION_DATA_IV', utf8_decode('DATA IV HERE'));
     define('ENCRYPTION_DATA_KEY', 'SECRET DATA KEY HERE');
-    # db data encryption constants
+    // db data encryption constants
     define('ENCRYPTION_DB_IV', utf8_decode('DB IV HERE'));
     define('ENCRYPTION_DB_KEY', 'SECRET DB KEY HERE');
 
@@ -59,11 +59,11 @@
 	 */
 	class cryptMan
 	{
-		# Class configuration consts
-		const CRYPTMAN_MODE_DB = 1; # Mode when using encrypted data from DB
-		const CRYPTMAN_MODE_DATA = 2; # Mode when using encrypted data from Live Website
-		const CRYPTMAN_CIPHER_ENGINE = MCRYPT_BLOWFISH; # Ciphering engine in use
-		const CRYPTMAN_MCRYPT_MODE = MCRYPT_MODE_ECB; # Passthrough mode in use
+		// Class configuration consts
+		const CRYPTMAN_MODE_DB = 1; // Mode when using encrypted data from DB
+		const CRYPTMAN_MODE_DATA = 2; // Mode when using encrypted data from Live Website
+		const CRYPTMAN_CIPHER_ENGINE = MCRYPT_BLOWFISH; // Ciphering engine in use
+		const CRYPTMAN_MCRYPT_MODE = MCRYPT_MODE_ECB; // Passthrough mode in use
 
         /**
          * Checks if MCrypt is installed

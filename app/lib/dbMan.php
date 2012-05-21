@@ -104,7 +104,7 @@
                 {
                     $update = true;
                     try { $this->select_db($dbName); }
-                    catch (\Exception $e) # Revert in case of problem
+                    catch (\Exception $e) // Revert in case of problem
                     {
                         $update = false;
                         $this->select_db(self::$_connectionInfo['dbname']);
@@ -183,10 +183,10 @@
         {
             // TODO filter each %{xx} and dequeue matching $params from the array then parse query
             $placeholders = array();
-            # TODO : Count placeholders ($/%[b|c|d|e|E|u|f|F|g|G|o|s|x|X|vs|vd]/^)
-            # TODO : associate each placeholder with $params arg with array($param => offset) in string $query
-            # TODO : filter each custom placeholder (%vs %vd) with the replacement from $params
-            # TODO : unset each matching $params members
+            // TODO : Count placeholders ($/%[b|c|d|e|E|u|f|F|g|G|o|s|x|X|vs|vd]/^)
+            // TODO : associate each placeholder with $params arg with array($param => offset) in string $query
+            // TODO : filter each custom placeholder (%vs %vd) with the replacement from $params
+            // TODO : unset each matching $params members
 
 
             $regex = '/%v[s|d]/';
@@ -529,7 +529,7 @@
          */
         public function fetch_all($resulttype = MYSQLI_ASSOC, $xss = false)
         {
-            if (method_exists($this->_innerRes, 'fetch_all')) # Compatibility layer with PHP < 5.3
+            if (method_exists($this->_innerRes, 'fetch_all')) // Compatibility layer with PHP < 5.3
                 $res = $this->_innerRes->fetch_all($resulttype);
             else
                 for ($res = array(); $tmp = $this->_innerRes->fetch_array($resulttype);) $res[] = $tmp;

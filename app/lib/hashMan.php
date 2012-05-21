@@ -120,14 +120,14 @@
                 if (strlen($hash) == 60) return $hash;
             }
 
-            if (CRYPT_EXT_DES == 1 && !$this->_portableHashes) # DES Hashing fallback if BCrypt is not available
+            if (CRYPT_EXT_DES == 1 && !$this->_portableHashes) // DES Hashing fallback if BCrypt is not available
             {
                 if (strlen($random) < 3) $random = $this->_getRandomBytes(3);
                 $hash = crypt($data, $this->_saltGenerator->extended($random));
                 if (strlen($hash) == 20) return $hash;
             }
 
-            if (strlen($random) < 6) $random = $this->_getRandomBytes(6); # Generic Hashing fallback
+            if (strlen($random) < 6) $random = $this->_getRandomBytes(6); // Generic Hashing fallback
             $hash = $this->_crypt($data, $this->_saltGenerator->generic($random));
             if (strlen($hash) == 34) return $hash;
 
@@ -173,11 +173,11 @@
         public function getIterationCount() { return $this->_iterationCount; }
         public function setIterationCount($val)
         {
-            # Check if number is  between 4 and 31 and a power of 2
+            // Check if number is  between 4 and 31 and a power of 2
             if ($val < 4 || $val > 31 && ($val && $val & ($val - 1) === 0))
                 $this->_iterationCount = $val;
             else if (!isset($this->_iterationCount))
-                $this->_iterationCount = 8; # Stub default if not set + incorrect value
+                $this->_iterationCount = 8; // Stub default if not set + incorrect value
         }
 
         /**

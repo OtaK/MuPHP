@@ -43,7 +43,7 @@
 
         public function buildSchema()
         {
-            $this->_schema = array(); # reset if needed
+            $this->_schema = array(); // reset if needed
             $tables = $this->_db->singleColumnQuery("SHOW TABLES");
             for ($i = 0, $il = count($tables); $i < $il; ++$i)
             {
