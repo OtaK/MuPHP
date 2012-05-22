@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-//header {
+#header {
     top: 0;
     text-align: left;
     width: 100%;
@@ -11,11 +11,11 @@
     display: block;
 }
 
-//content {
+#content {
     margin: 0 auto;
     width: 900px;
     height: 100%;
-    background: //fffafa;
+    background: #fffafa;
     color: black;
     padding: 10px;
     text-shadow: 1px 1px 1px white;
@@ -23,11 +23,11 @@
     position: relative;
 }
 
-//footer {
+#footer {
     margin: 0 auto;
     width: 900px;
     height: 100%;
-    background: //fffafa;
+    background: #fffafa;
     color: black;
     padding: 10px;
     text-shadow: 1px 1px 1px white;
@@ -36,7 +36,7 @@
     text-align: center;
 }
 
-//logo {
+#logo {
     text-align: left;
     width: 900px;
     height: 150px;
@@ -45,7 +45,7 @@
     background-color: white;
 }
 
-//logo img {
+#logo img {
     z-index: 1;
     position: relative;
 }
