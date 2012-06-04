@@ -30,7 +30,7 @@
      * @todo Implement the way to have multiple fields to search keywords in
 	 */
     namespace TakPHPLib\Search;
-	require_once dirname(__FILE__) . '/../cfg/define.php';
+	require_once dirname(__FILE__) . '/../../cfg/define.php';
 
 
 	/**
@@ -41,16 +41,16 @@
 	class searchUtils
 	{
 		private
-				$_joins,
-				$_searchFields,
-				$_displayedFields,
-				$_keywordDbField,
-				$_keywords,
-				$_resultLinkId,
-				$_resultLinkHref,
-				$_results,
-				$_counts,
-				$_limits;
+            $_joins,
+            $_searchFields,
+            $_displayedFields,
+            $_keywordDbField,
+            $_keywords,
+            $_resultLinkId,
+            $_resultLinkHref,
+            $_results,
+            $_counts,
+            $_limits;
 
 		/**
 		 * Ctor

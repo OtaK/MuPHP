@@ -1,5 +1,5 @@
 <?php 
-	require_once __DIR__.'/../hashMan.php';
+	require_once __DIR__ . '/../crypto/hashMan.php';
 
 	header('Content-type: text/plain');
 

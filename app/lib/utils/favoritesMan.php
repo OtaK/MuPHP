@@ -25,7 +25,7 @@
 	 * @version 1.0
 	 */
     namespace TakPHPLib\CookieFav;
-	require_once dirname(__FILE__).'/../cfg/define.php';
+	require_once dirname(__FILE__) . '/../../cfg/define.php';
 
 	/**
 	 * @package TakPHPLib

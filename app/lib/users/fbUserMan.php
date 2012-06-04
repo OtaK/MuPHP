@@ -27,7 +27,7 @@
      *      1.0 : initial release
      */
     namespace TakPHPLib\Accounts;
-    require_once __DIR__.'/userMan.php';
+    require_once __DIR__ . '/userMan.php';
 
     class fbUserManNotConfiguredException extends \Exception
     {

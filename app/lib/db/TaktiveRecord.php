@@ -27,6 +27,7 @@
      *      0.1dev : In dev
      */
     namespace TakPHPLib\ActiveRecord;
+    require_once __DIR__.'/dbMan.php';
 
     class TaktiveRecordSchema
     {

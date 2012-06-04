@@ -34,7 +34,7 @@
      *      0.9b : initial release
      */
     namespace TakPHPLib\DB;
-    require_once __DIR__ . '/designPatterns.php';
+    require_once __DIR__ . '/../abstraction/designPatterns.php';
 
     /**
      * dbMan is an overlay (and a singleton) to MySQLi and allows queries to be automatically escaped against SQL injections

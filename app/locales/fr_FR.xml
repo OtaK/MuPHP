@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+    <header>
+        <text id="site_description">Description du site</text>
+        <text id="keywords">test,takphplib,otak,framework</text>
+    </header>
+    <content>
+        <page id="home">
+            <text id="HelloWorld">Hello world !</text>
+        </page>
+        <!-- Add new pages with id for content -->
+    </content>
+    <footer>
+        <text id="license"><![CDATA[Powered by TakPHPLib made by <a href="http://mathieu-amiot.fr/" target="_blank">Mathieu Amiot</a>]]></text>
+    </footer>
+</site>

@@ -23,8 +23,13 @@
     $modules = getModules();
     $acl = new \TakPHPLib\Auth\rightsMan($modules); // rights management object
     session_start();
+    if (\TakPHPLib\Accounts\userMan::loggedIn())
+        $currentLocale = \TakPHPLib\Accounts\userMan::currentUser()->getUserLocale();
+    else
+        $currentLocale = DEFAULT_LOCALE;
 
     $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
+    $i18n = new \TakPHPLib\Locales\localeLoader($currentLocale);
     if ($auth = $acl->isAuthorized($pageName))
         include __DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'; // controller
 

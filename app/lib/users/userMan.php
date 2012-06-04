@@ -25,8 +25,8 @@
      * @version    1.0
      */
     namespace TakPHPLib\Accounts;
-    require_once dirname(__FILE__) . '/../cfg/define.php';
-    require_once dirname(__FILE__) . '/cryptMan.php';
+    require_once dirname(__FILE__) . '/../../cfg/define.php';
+    require_once dirname(__FILE__) . '/../crypto/cryptMan.php';
 
     /**
      * @package    TakPHPLib
@@ -42,6 +42,7 @@
             $encrypted_passwd,
             $auth_level,
             $use_cookies,
+            $user_locale,
             $loggedIn;
 
         /**
@@ -50,8 +51,9 @@
          * @param string $email     User's email address
          * @param string $passwd    Password *not* encrypted (yet)
          * @param string $authlevel User rank
+         * @param string $locale    Default locale
          */
-        public function __construct($uid = -1, $email = '', $passwd = '', $authlevel = 'USER')
+        public function __construct($uid = -1, $email = '', $passwd = '', $authlevel = 'USER', $locale = DEFAULT_LOCALE)
         {
             $this->loggedIn = false;
             if ($uid !== -1)
@@ -59,6 +61,7 @@
                 $this->user_id          = $uid;
                 $this->user_email       = $email;
                 $this->auth_level       = $authlevel;
+                $this->user_locale      = $locale;
                 $this->encrypted_passwd = \TakPHPLib\Crypt\cryptMan::encrypt($passwd);
             }
             else
@@ -109,6 +112,17 @@
         public function getAuthLevel()
         {
             return $this->auth_level;
+        }
+
+        public function setUserLocale($locale = DEFAULT_LOCALE)
+        {
+            if ($locale)
+                $this->user_locale = $locale;
+        }
+
+        public function getUserLocale()
+        {
+            return $this->user_locale;
         }
 
         public function isAdmin()
