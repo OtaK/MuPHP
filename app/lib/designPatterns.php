@@ -22,8 +22,9 @@
 	 * @subpackage DesignPatterns
 	 * @author Mathieu AMIOT <m.amiot@otak-arts.com>
 	 * @copyright Copyright (c) 2011, Mathieu AMIOT
-	 * @version 1.0
+	 * @version 1.1
      * @changelog
+     *      1.1 : Added Observer/Observable patterns
      *      1.0 : initial release
 	 */
     namespace TakPHPLib\DesignPatterns;
@@ -97,5 +98,120 @@
      */
     interface Factory
     {
+        /**
+         * @static
+         * @abstract
+         * @param $className
+         * @return mixed
+         */
         public static function factory($className);
+    }
+
+    /**
+     * Interface for Observables
+     * @interface
+     */
+    interface iObservable
+    {
+        /**
+         * @abstract
+         * @return void
+         */
+        public function notifyObservers();
+
+        /**
+         * @abstract
+         * @param iObserver $obj
+         * @return void
+         */
+        public function addObserver(iObserver &$obj);
+
+        /**
+         * @abstract
+         * @param iObserver $obj
+         * @return void
+         */
+        public function removeObserver(iObserver &$obj);
+    }
+
+    /**
+     * Basic implementation of iObservable interface
+     * @abstract
+     */
+    abstract class Observable implements iObservable
+    {
+        /** @var array */
+        private $_observers;
+        /**
+         * @return void
+         */
+        public function notifyObservers()
+        {
+            foreach ($this->_observers as &$curObserver)
+            {
+                /** @var iObserver $curObserver */
+                $curObserver->update($this);
+            }
+        }
+
+        /**
+         * @param iObserver $obj
+         * @return void
+         */
+        public function addObserver(iObserver &$obj)
+        {
+            if (array_search($obj, $this->_observers, true) !== false)
+                return;
+            $this->_observers[] = $obj;
+        }
+
+        /**
+         * @param iObserver $obj
+         * @return void
+         */
+        public function removeObserver(iObserver &$obj)
+        {
+            if (($index = array_search($obj, $this->_observers, true)) === false)
+                return;
+            unset($this->_observers[$index]);
+            if ($index === ($c = count($this->_observers)))
+                return;
+            $this->_observers[$index] = $this->_observers[$c - 1];
+            unset($this->_observers[$c - 1]);
+        }
+    }
+
+    /**
+     * Interface for Observers
+     */
+    interface iObserver
+    {
+        /**
+         * @abstract
+         * @param iObservable $obj
+         * @return void
+         */
+        public function update(iObservable &$obj = null);
+    }
+
+    /**
+     * Basic implementation of iObserver, takes a callback and executes it
+     * @abstract
+     */
+    abstract class Observer implements iObserver
+    {
+        /** @var \Closure callback */
+        private $_callback;
+
+        /**
+         * Ctor
+         * @param Closure $callback
+         */
+        public function __construct(\Closure &$callback) { $this->_callback = $callback; }
+
+        /**
+         * @param iObservable $obj
+         * @return void
+         */
+        public function update(iObservable &$obj = null) { $this->${'_callback'}($obj); }
     }
