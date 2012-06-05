@@ -164,3 +164,5 @@ app/lib/webservices/includes/.svn/entries
 app/locales/.svn/entries
 
 app/locales/.svn/text-base/fr_FR.xml.svn-base
+
+app/cfg/.svn/text-base/autoloader.php.svn-base

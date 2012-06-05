@@ -18,11 +18,13 @@
      */
 
     // Base includes
-    $_DIR_ = dirname(__FILE__); // __DIR__ emulation
-    include_once $_DIR_ . '/modules.php';
-    include_once $_DIR_ . '/../lib/users/rightsMan.php';
-    include_once $_DIR_ . '/../lib/users/userMan.php';
-    include_once $_DIR_ . '/../lib/db/dbMan.php';
+    include_once __DIR__ . '/modules.php';
+    include_once __DIR__ . '/autoloader.php';
+    TakPHPLib_autoload();
+    /*include_once __DIR__ . '/../lib/users/rightsMan.php';
+    include_once __DIR__ . '/../lib/users/userMan.php';
+    include_once __DIR__ . '/../lib/db/dbMan.php';
+    include_once __DIR__ . '/../lib/i18n/localeLoader.php';*/
 
     // DB & Site Path Constants
     if ($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1') // Development site
