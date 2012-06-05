@@ -36,9 +36,20 @@
         }
     }
 
+    class DOMDocumentNotInstalledException extends \Exception
+    {
+        public function __construct()
+        {
+            $this->message = "The DOMDocument class is not installed!";
+        }
+    }
+
 
     class localeLoader
     {
+        /** @var string */
+        private $_filePath;
+
         /** @var \DOMDocument */
         private $_xmlFile;
 
@@ -52,6 +63,7 @@
          * Ctor
          * @param string $locale
          * @throws LocaleNotFoundException
+         * @throws DOMDocumentNotInstalledException
          */
         public function __construct($locale = DEFAULT_LOCALE)
         {
@@ -61,8 +73,14 @@
                 throw new LocaleNotFoundException();
             }
 
+            if (!class_exists('DOMDocument'))
+            {
+                $this->_loaded = false;
+                throw new DOMDocumentNotInstalledException();
+            }
+
             $this->_xmlFile = new \DOMDocument();
-            $this->_xmlFile->load(__DIR__.'/../../locales/'.$locale);
+            $this->_xmlFile->load($this->_filePath);
             $this->_loaded = true;
             $this->_currentPage = null;
         }
@@ -70,13 +88,13 @@
         /**
          * Checks if provided locale exists
          * @static
-         * @param $locale
+         * @param string $locale
          * @return bool
          */
-        public static function localeExists($locale)
+        public function localeExists($locale)
         {
-            $filePath = __DIR__.'/../../locales/'.$locale;
-            return file_exists($filePath);
+            $this->_filePath = __DIR__.'/../../locales/'.$locale.'.xml';
+            return file_exists($this->_filePath);
         }
 
         /**
