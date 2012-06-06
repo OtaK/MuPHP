@@ -22,8 +22,9 @@
      * @subpackage Accounts
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2011, Mathieu AMIOT
-     * @version    1.0
+     * @version    1.1
      * @changelog
+     *      1.1 : Several bugfixes
      *      1.0 : initial release
      */
     namespace TakPHPLib\Accounts;
@@ -51,7 +52,7 @@
          *      'apps' : { JSON REPONSE CONTAINED IN THE /me/accounts QUERY }
          * }
          *
-         * @param string|array $responseData    JSON Object from FB login response (or array
+         * @param string|array $responseData    JSON Object from FB login response (or array)
          * @param bool         $isArray         defaults to false, set to true if $responseData is an array
          * @throws \Exception
          * @throws fbUserManNotConfiguredException
@@ -62,7 +63,7 @@
                 throw new fbUserManNotConfiguredException();
 
             // Decode data from FB JSON Response
-            $fbData = $isArray ? json_decode($responseData, true) : $responseData;
+            $fbData = $isArray ? $responseData : json_decode($responseData, true);
 
             $this->fbUserId = $fbData['user']['id'];
 
@@ -93,7 +94,7 @@
          */
         protected function isRegistered()
         {
-            $res = (bool)\TakPHPLib\DB\dbMan::get_instance()->singleResQuery("
+            $res = \TakPHPLib\DB\dbMan::get_instance()->singleResQuery("
                 SELECT *
                 FROM users
                 WHERE user_fb_id = %d",
