@@ -30,9 +30,13 @@
 
     $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
     $i18n = new \TakPHPLib\Locales\localeLoader($currentLocale);
+    
     if ($auth = $acl->isAuthorized($pageName))
+    {
         include __DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'; // controller
-
+        $i18n->getPageNode($pageName); // translations
+    }
+    
     include __DIR__.'/app/_tpl/canvas/head.phtml'; // header
 
     if ($auth)
