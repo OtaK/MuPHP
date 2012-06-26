@@ -166,3 +166,7 @@ app/locales/.svn/entries
 app/locales/.svn/text-base/fr_FR.xml.svn-base
 
 app/cfg/.svn/text-base/autoloader.php.svn-base
+
+app/lib/mobile/.svn/entries
+
+app/lib/mobile/.svn/text-base/mobileDetector.php.svn-base
