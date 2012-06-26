@@ -22,8 +22,9 @@
 	 * @subpackage DesignPatterns
 	 * @author Mathieu AMIOT <m.amiot@otak-arts.com>
 	 * @copyright Copyright (c) 2011, Mathieu AMIOT
-	 * @version 1.1
+	 * @version 1.2
      * @changelog
+	 *      1.2 : Added Semaphore design pattern
      *      1.1 : Added Observer/Observable patterns
      *      1.0 : initial release
 	 */
@@ -214,4 +215,80 @@
          * @return void
          */
         public function update(iObservable &$obj = null) { $this->${'_callback'}($obj); }
+    }
+
+    /**
+     * Class to manage semaphores
+     */
+    class Semaphore
+    {
+        const
+                SEMAPHORE_LOCATION = '/tmp/eperflex_semaphore';
+
+        static private
+                $_lockData,
+                $_loaded = false;
+
+        /**
+         * Gets the data from the file
+         * @static
+         */
+        static private function _getLockData()
+        {
+            if (file_exists(self::SEMAPHORE_LOCATION))
+                self::$_lockData = json_decode(file_get_contents(self::SEMAPHORE_LOCATION), true);
+            else
+                self::$_lockData = array();
+            self::$_loaded = true;
+        }
+
+        /**
+         * Puts current data into file
+         * @static
+         * @return void
+         */
+        static private function _putLockData()
+        {
+            if (!self::$_loaded) return;
+            file_put_contents(self::SEMAPHORE_LOCATION, json_encode(self::$_lockData), LOCK_EX);
+        }
+
+        /**
+         * Locks a key into the semaphore
+         * @static
+         * @param $key
+         */
+        static public function lock($key)
+        {
+            if (!self::$_loaded)
+                self::_getLockData();
+            self::$_lockData[$key] = true;
+            self::_putLockData();
+        }
+
+        /**
+         * Unlocks a key from the semaphore
+         * @static
+         * @param $key
+         */
+        static public function unlock($key)
+        {
+            if (!self::$_loaded)
+                self::_getLockData();
+            self::$_lockData[$key] = false;
+            self::_putLockData();
+        }
+
+        /**
+         * Checks if a given key is currently locked in the semaphore
+         * @static
+         * @param int|string $key
+         * @return bool
+         */
+        static public function isLocked($key)
+        {
+            if (!self::$_loaded)
+                self::_getLockData();
+            return (isset(self::$_lockData[$key]) && self::$_lockData[$key]);
+        }
     }
