@@ -96,7 +96,7 @@
             if (isset(self::$_vars[$name]))
                 self::dumpVar(self::$_vars[$name]);
             else
-                throw new VariableNotDeclaredException;
+                throw new VariableNotDeclaredException();
         }
 
 

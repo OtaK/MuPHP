@@ -103,7 +103,7 @@
          */
         public function getPageNode($currentPage)
         {
-            return !$this->_loaded ?: ($this->_currentPage = $this->_xmlFile->getElementById($currentPage)->getElementsByTagName('text'));
+            return !$this->_loaded ? new \DOMNodeList() : ($this->_currentPage = $this->_xmlFile->getElementById($currentPage)->getElementsByTagName('text'));
         }
 
         /**

@@ -62,9 +62,9 @@
         static public function factory($name)
         {
             if (file_exists(($fileName = dirname(__FILE__).'/includes/'.$name.'.php'))) include_once $fileName;
-            else throw new apWsWebserviceNotFoundException;
+            else throw new apWsWebserviceNotFoundException();
             if (class_exists($name)) return new $name();
-            else throw new apWsWebserviceNotFoundException;
+            else throw new apWsWebserviceNotFoundException();
         }
 
         /**
@@ -105,7 +105,7 @@
         public function run($asObject = false, $echo = true)
         {
             if (!$this->gatherInputData())
-                throw new apWsBadModeSupplied;
+                throw new apWsBadModeSupplied();
             $this->process();
             return $this->outputResult($asObject, $echo);
         }
