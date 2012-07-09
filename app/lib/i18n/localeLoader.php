@@ -117,4 +117,15 @@
             for ($i = 0, $l = $this->_currentPage->length; $i < $l && $this->_currentPage->item($i)->attributes->getNamedItem('id')->nodeValue != $textId; ++$i);
             return ($i == $l) ?: $this->_currentPage->item($i)->textContent;
         }
+
+        /**
+         * Returns a given element id in the xml file
+         * @param $textId
+         *
+         * @return string
+         */
+        public function getGlobalElemText($textId)
+        {
+            return ($tmp = $this->_xmlFile->getElementById($textId)) ? $tmp->textContent : '';
+        }
     }
