@@ -115,6 +115,6 @@
         {
             if (!$this->_loaded || !$this->_currentPage) return '';
             for ($i = 0, $l = $this->_currentPage->length; $i < $l && $this->_currentPage->item($i)->attributes->getNamedItem('id')->nodeValue != $textId; ++$i);
-            return ($i < $l) ?: $this->_currentPage->item($i)->textContent;
+            return ($i == $l) ?: $this->_currentPage->item($i)->textContent;
         }
     }
