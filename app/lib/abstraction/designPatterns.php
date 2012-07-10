@@ -223,7 +223,7 @@
     class Semaphore
     {
         const
-                SEMAPHORE_LOCATION = '/tmp/eperflex_semaphore';
+                SEMAPHORE_LOCATION = '/tmp/php_semaphore';
 
         static private
                 $_lockData,
