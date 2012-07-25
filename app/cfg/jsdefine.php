@@ -13,10 +13,6 @@
         'sitePath' => SITE_PATH,
         'currentLocale' => CURRENT_LOCALE,
         'baseUrl' => BASE_URL,
-        'FB' => array(
-            'appId' => FB_APPID,
-            'appUrl' => FB_APP_URL
-        ),
         'locale' => $i18n->buildPageArray(),
     );
 
