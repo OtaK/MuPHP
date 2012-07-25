@@ -20,6 +20,11 @@
     // Appel de toutes les pages(Views et Controllers) pour construire le site
     include_once 'app/cfg/define.php'; // calling cfg file
 
+    if (DEBUG)
+    {
+        $siteBenchmark = new \TakPHPLib\Performance\benchmarker();
+        $siteBenchmark->start();
+    }
     $modules = getModules();
     $acl = new \TakPHPLib\Auth\rightsMan($modules); // rights management object
     session_start();
@@ -30,17 +35,42 @@
 
     $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
     $i18n = new \TakPHPLib\Locales\localeLoader($currentLocale);
-    
+
     if ($auth = $acl->isAuthorized($pageName))
     {
-        include __DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'; // controller
-        $i18n->getPageNode($pageName); // translations
-    }
-    
-    include __DIR__.'/app/_tpl/canvas/head.phtml'; // header
+        //\TakPHPLib\Utils\utils::safeInclude(__DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'); // model / controller
+        include __DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'; // model / controller
+        $headCanvas = $modules[$pageName]['headCanvas'];
+        $footCanvas = $modules[$pageName]['footCanvas'];
+        if (!\TakPHPLib\Accounts\userMan::loggedIn())
+        {
+            $headCanvas = 'head_loggedout';
+            $footCanvas = 'foot_loggedout';
+        }
 
-    if ($auth)
-        include __DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml'; // view
+        //$i18n->selectSection(\TakPHPLib\Locales\localeLoader::LOCALE_HEADER);
+        $i18n->selectSection(\TakPHPLib\Locales\localeLoader::LOCALE_CONTENT);
+        $i18n->getPageNode($pageName); // translations
+        include __DIR__.'/app/_tpl/canvas/'.$headCanvas.'.phtml'; // header
+
+        if (file_exists(__DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml')) // view
+        {
+            include __DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml';
+        }
+
+        $i18n->selectSection(\TakPHPLib\Locales\localeLoader::LOCALE_FOOTER);
+        include __DIR__.'/app/_tpl/canvas/'.$footCanvas.'.phtml'; // footer
+
+        /*\TakPHPLib\Utils\utils::safeInclude(__DIR__.'/app/_tpl/canvas/'.$headCanvas.'.phtml'); // header
+        \TakPHPLib\Utils\utils::safeInclude(__DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml'); // view
+        \TakPHPLib\Utils\utils::safeInclude(__DIR__.'/app/_tpl/canvas/'.$footCanvas.'.phtml'); // footer*/
+    }
     else // error if hacker detected
-        echo "<h2>La page demandée n'existe pas ou vous n'êtes pas autorisé à la voir.</h2>";
-    include __DIR__.'/app/_tpl/canvas/foot.phtml'; // footer
+        header('Location: '.BASE_URL); // Redirect to home / landing
+
+    if (DEBUG)
+    {
+        /** @var $siteBenchmark \TakPHPLib\Performance\benchmarker */
+        $siteBenchmark->end();
+        echo '<script type="text/javascript">$(\'#benchmark\').html(\''.$siteBenchmark->output('Generation', false).'\')</script>';
+    }

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="fr-FR">
 <head>
-    <title><?php echo SITE_NAME; ?> :: <?php echo (isset($modules[$pageName])) ? $modules[$pageName]['pageTitle'] : "Erreur"; ?></title>
+    <title><?php echo SITE_NAME; ?> :: <?php echo $i18n->getPageTitle(); ?></title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <meta name="description" content="<?php echo $i18n->getText('site_description'); ?>" />

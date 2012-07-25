@@ -1,4 +1,7 @@
     </div>
-    <footer id="footer"><?php echo $i18n->getGlobalElemText('license'); ?>&nbsp;&copy;</footer>
+    <footer id="footer">
+        <?php echo $i18n->getText('license'); ?>&nbsp;&copy;&nbsp;<?php echo date('Y'); ?>
+        <?php if (DEBUG) echo "<br /><span id='benchmark'></span>"; ?>
+    </footer>
 </body>
 </html>
