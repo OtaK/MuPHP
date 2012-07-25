@@ -22,9 +22,14 @@
         return array(
             'home' => array(
                 'fileName'          => '_home',
-                'pageTitle'         => 'Accueil',
                 'registeredOnly'    => false,
-                'adminOnly'         => false
+                'adminOnly'         => false,
+                'headCanvas'        => 'head',
+                'footCanvas'        => 'foot',
+                'menuItem'          => array(
+                    'position'      => 0,
+                    'parent'        => null
+                )
             ),
 
         );
