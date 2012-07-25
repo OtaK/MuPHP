@@ -1,12 +1,30 @@
 <?php
 
+    /*
+    * Copyright 2012 Mathieu "OtaK_" Amiot <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
+    *
+    * Licensed under the Apache License, Version 2.0 (the "License");
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    *      http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an "AS IS" BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    *
+    */
+
     /**
      * @package TakPHPLib
      * @subpackage Webservice Server
      * @author Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright Copyright (c) 2012, Mathieu AMIOT
-     * @version 0.7
+     * @version 1.0
      * @changelog
+     *      1.0 : stable version, fixed most bugs
      *      0.7 : AJAX calls support implememented
      *      0.5 : first version that needs some testing
      *      0.1a : in progress
@@ -44,14 +62,20 @@
         protected
             $_inputData,
             $_outputData,
+            $_jsonOptions = JSON_FORCE_OBJECT,
             $_mode,
             $_isAJAX;
 
         const
-            APWS_POST = '_POST',
-            APWS_GET = '_GET',
-            APWS_PUT = 'http_response_header[\'PUT\']',
-            APWS_DELETE = 'http_response_header[\'DELETE\']';
+            APWS_POST = 0x01,
+            APWS_GET = 0x02,
+            APWS_PUT = 0x04,
+            APWS_DELETE = 0x08;
+
+        /**
+         * Abstract ctor forcing children to implement it (configuration part)
+         */
+        abstract public function __construct();
 
         /**
          * @static
@@ -61,20 +85,20 @@
          */
         static public function factory($name)
         {
-            if (file_exists(($fileName = dirname(__FILE__).'/includes/'.$name.'.php'))) include_once $fileName;
+            if (file_exists(($fileName = __DIR__.'/includes/'.$name.'.php'))) include_once $fileName;
             else throw new apWsWebserviceNotFoundException();
-            if (class_exists($name)) return new $name();
+            $className = '\TakPHPLib\WebserviceServer\apWs\\'.$name;
+            if (class_exists($className)) return new $className();
             else throw new apWsWebserviceNotFoundException();
         }
 
         /**
-         * @param bool $asObject
          * @param bool $echo
          * @return string
          */
-        protected function outputResult($asObject = false, $echo = true)
+        protected function outputResult($echo = true)
         {
-            $res = json_encode($this->_outputData, ($asObject ? JSON_FORCE_OBJECT : null));
+            $res = json_encode($this->_outputData, $this->_jsonOptions);
             if ($echo) echo $res;
             return $res;
         }
@@ -84,30 +108,69 @@
          */
         protected function gatherInputData()
         {
-            if (!isset(${$this->_mode})) return false;
+            if (!$this->_checkInputData()) return false;
             if ($this->_isAJAX
-            && (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest'))
+                && (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest'))
                 self::quit(new apWsAjaxViolationAccess());
-            $this->_inputData = ${$this->_mode};
+            $this->_inputData = &$this->_getInputData();
             return true;
         }
+
+        /**
+         * @return bool
+         */
+        protected function _checkInputData()
+        {
+            $res = &$this->_getInputData();
+            return $res !== null && isset($res);
+        }
+
+        /**
+         * @return array|null
+         */
+        protected function &_getInputData()
+        {
+            switch ($this->_mode)
+            {
+                case self::APWS_GET: return $_GET;
+                case self::APWS_POST: return $_POST;
+                case self::APWS_DELETE: return $http_response_header['DELETE'];
+                case self::APWS_PUT: return $http_response_header['PUT'];
+                default: return null;
+            }
+        }
+
+        public function outputAsObject($val = true)
+        {
+            if ($val)
+                $this->_jsonOptions |= JSON_FORCE_OBJECT;
+            else
+                $this->_jsonOptions &= JSON_FORCE_OBJECT;
+        }
+
+        /*public function jsonPrettyPrint($val = false)
+        {
+            if ($val)
+                $this->_jsonOptions &= JSON_PRETTY_PRINT;
+            else
+                $this->_jsonOptions |= JSON_PRETTY_PRINT;
+        }*/
 
         public function setMode($mode = self::APWS_POST) { $this->_mode = $mode; }
         public function getMode() { return $this->_mode; }
         public function isAJAX($val = null) { if ($val !== null && is_bool($val)) $this->_isAJAX = $val; return $this->_isAJAX; }
 
         /**
-         * @param bool $asObject
          * @param bool $echo
          * @return string
          * @throws apWsBadModeSupplied
          */
-        public function run($asObject = false, $echo = true)
+        public function run($echo = true)
         {
             if (!$this->gatherInputData())
                 throw new apWsBadModeSupplied();
             $this->process();
-            return $this->outputResult($asObject, $echo);
+            return $this->outputResult($echo);
         }
 
         /**
@@ -120,12 +183,16 @@
          * Quits the current webservice script with a JSON error
          * @static
          * @param \Exception $e
+         * @param apWs       $context
          */
-        static public function quit(\Exception $e)
+        static public function quit(\Exception $e, apWs &$context = null)
         {
-            die(json_encode(array(
+            $dieData = array(
                 'error' => true,
                 'errorText' => $e->getMessage()
-            )));
+            );
+            if (DEBUG && $context)
+                $dieData['inputData'] = $context->_inputData;
+            die(json_encode($dieData));
         }
     }
