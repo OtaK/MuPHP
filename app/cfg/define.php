@@ -19,8 +19,18 @@
 
     // Base includes
     include_once __DIR__ . '/modules.php';
-    include_once __DIR__ . '/autoloader.php';
-    TakPHPLib_autoload();
+    include_once __DIR__ . '/modules.php';
+    if (!defined('AUTOLOAD') || AUTOLOAD)
+    {
+        include_once __DIR__ . '/autoloader.php';
+        TakPHPLib_autoload();
+    }
+    else
+    {
+        include_once __DIR__ . '/../lib/users/userMan.php';
+        include_once __DIR__ . '/../lib/i18n/localeLoader.php';
+        include_once __DIR__ . '/../lib/utils/utils.php';
+    }
     /*include_once __DIR__ . '/../lib/users/rightsMan.php';
     include_once __DIR__ . '/../lib/users/userMan.php';
     include_once __DIR__ . '/../lib/db/dbMan.php';
@@ -48,7 +58,16 @@
 
     // Locale definition
     define('DEFAULT_LOCALE', 'fr_FR'); // i18n file to call
-    setlocale(LC_TIME, DEFAULT_LOCALE.'.UTF8'); // Locale definition for time expression
+
+    $currentLocale = DEFAULT_LOCALE; // Runtime locale definitions
+    if (\TakPHPLib\Accounts\userMan::loggedIn())
+        $currentLocale = \TakPHPLib\Accounts\userMan::currentUser()->getUserLocale();
+
+    $shortLocale = substr($currentLocale, 0, 2);
+    define('CURRENT_LOCALE', $currentLocale);
+    define('SHORT_LOCALE', $shortLocale);
+
+    setlocale(LC_TIME, $currentLocale.'.UTF8'); // Locale definition for time expression
 
     // Website constants
     define('SITE_PATH', $sitePath); // Real path to website root

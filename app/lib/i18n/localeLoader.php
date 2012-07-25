@@ -21,8 +21,9 @@
      * @subpackage Locales
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2012, Mathieu AMIOT
-     * @version    0.1
+     * @version    0.5a
      * @changelog
+     *      0.5a : first stable alpha
      *      0.1 : pre-version
      */
     namespace TakPHPLib\Locales;
@@ -44,9 +45,23 @@
         }
     }
 
+    class SectionNotFoundException extends \Exception
+    {
+        public function __construct()
+        {
+            $this->message = "The demanded section could not be found!";
+        }
+    }
+
 
     class localeLoader
     {
+        const
+            LOCALE_HEADER = 'header',
+            LOCALE_CONTENT = 'content',
+            LOCALE_DIALOGS = 'dialogs',
+            LOCALE_FOOTER = 'footer';
+
         /** @var string */
         private $_filePath;
 
@@ -55,6 +70,9 @@
 
         /** @var \DOMNodeList */
         private $_currentPage;
+
+        /** @var string */
+        private $_currentPageTitle;
 
         /** @var bool */
         private $_loaded;
@@ -67,7 +85,7 @@
          */
         public function __construct($locale = DEFAULT_LOCALE)
         {
-            if (!self::localeExists($locale))
+            if (!self::localeExists(substr($locale, 0, 2)))
             {
                 $this->_loaded = false;
                 throw new LocaleNotFoundException();
@@ -87,8 +105,7 @@
 
         /**
          * Checks if provided locale exists
-         * @static
-         * @param string $locale
+         * @param $locale
          * @return bool
          */
         public function localeExists($locale)
@@ -103,7 +120,11 @@
          */
         public function getPageNode($currentPage)
         {
-            return !$this->_loaded ? new \DOMNodeList() : ($this->_currentPage = $this->_xmlFile->getElementById($currentPage)->getElementsByTagName('text'));
+            if (!$this->_loaded) return new \DOMNodeList();
+            $page = $this->_xmlFile->getElementById($currentPage);
+            if (!$page) return new \DOMNodeList();
+            $this->_currentPageTitle = $page->getAttribute('title');
+            return ($this->_currentPage = $page->getElementsByTagName('text'));
         }
 
         /**
@@ -114,8 +135,82 @@
         public function getText($textId)
         {
             if (!$this->_loaded || !$this->_currentPage) return '';
-            for ($i = 0, $l = $this->_currentPage->length; $i < $l && $this->_currentPage->item($i)->attributes->getNamedItem('id')->nodeValue != $textId; ++$i);
-            return ($i == $l) ?: $this->_currentPage->item($i)->textContent;
+            for ($i = 0, $l = $this->_currentPage->length; $i < $l; ++$i)
+            {
+                if (!($this->_currentPage->item($i) instanceof \DOMElement))
+                    continue;
+                if ($this->_currentPage->item($i)->attributes->getNamedItem('name')->nodeValue == $textId)
+                    break;
+            }
+            return ($i == $l) ? '' : $this->_currentPage->item($i)->textContent;
+        }
+
+        /**
+         * Builds current page node as associative array
+         * @return array
+         */
+        public function buildPageArray()
+        {
+            if (!$this->_loaded || !$this->_currentPage) return array();
+
+            $res = array();
+            for ($i = 0, $l = $this->_currentPage->length; $i < $l; ++$i)
+            {
+                if (!($this->_currentPage->item($i) instanceof \DOMElement)) continue;
+                $k = $this->_currentPage->item($i)->attributes->getNamedItem('name')->nodeValue;
+                $res[$k] = $this->_currentPage->item($i)->textContent;
+            }
+            return $res;
+        }
+
+        /**
+         * Selects a section in the current XML file
+         * @param string $section
+         * @param bool   $return
+         * @throws SectionNotFoundException
+         * @return \DOMNodeList
+         */
+        public function selectSection($section = self::LOCALE_CONTENT, $return = false)
+        {
+            if ($res = $this->_xmlFile->getElementsByTagName($section))
+            {
+                $this->_loaded = true;
+                if ($return)
+                    return $res->item(0)->childNodes;
+                $this->_currentPage = $res->item(0)->childNodes;
+                return null;
+            }
+            else
+                throw new SectionNotFoundException();
+        }
+
+        /**
+         * Builds a localized menu array
+         * @return array
+         */
+        public function buildMenu()
+        {
+            $res = array();
+            $pages = $this->selectSection(self::LOCALE_CONTENT, true);
+            for ($i = 0, $l = $pages->length; $i < $l; ++$i)
+            {
+                $curItem = $pages->item($i);
+                if (!($curItem instanceof \DOMElement)) continue;
+                /** @var $curItem \DOMElement */
+                $id = $curItem->getAttribute('xml:id');
+                $label = $curItem->getAttribute('menulabel');
+                $res[$id] = $label;
+            }
+            return $res;
+        }
+
+        /**
+         * Gets the current page title
+         * @return string
+         */
+        public function getPageTitle()
+        {
+            return (isset($this->_currentPageTitle) ? $this->_currentPageTitle : '');
         }
 
         /**
