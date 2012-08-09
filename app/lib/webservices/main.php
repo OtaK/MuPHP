@@ -60,11 +60,11 @@
     abstract class apWs
     {
         protected
-            $_inputData,
-            $_outputData,
+            $_inputData = array(),
+            $_outputData = array(),
             $_jsonOptions = JSON_FORCE_OBJECT,
-            $_mode,
-            $_isAJAX;
+            $_mode = self::APWS_GET,
+            $_isAJAX = false;
 
         const
             APWS_POST = 0x01,
@@ -196,3 +196,5 @@
             die(json_encode($dieData));
         }
     }
+
+    include_once __DIR__.'/secureApWs.php';
