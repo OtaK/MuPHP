@@ -48,6 +48,9 @@
     // db data encryption constants
     define('ENCRYPTION_DB_IV', utf8_decode('DB IV HERE'));
     define('ENCRYPTION_DB_KEY', 'SECRET DB KEY HERE');
+    // WS data encryption constants
+    define('ENCRYPTION_WS_IV', utf8_decode('DB WS HERE'));
+    define('ENCRYPTION_WS_KEY', 'SECRET WS KEY HERE');
 
 	/**
 	 * @package    TakPHPLib
@@ -62,6 +65,7 @@
 		// Class configuration consts
 		const CRYPTMAN_MODE_DB = 1; // Mode when using encrypted data from DB
 		const CRYPTMAN_MODE_DATA = 2; // Mode when using encrypted data from Live Website
+        const CRYPTMAN_MODE_WS = 4; // Mode when using a secured Webservice
 		const CRYPTMAN_CIPHER_ENGINE = MCRYPT_BLOWFISH; // Ciphering engine in use
 		const CRYPTMAN_MCRYPT_MODE = MCRYPT_MODE_ECB; // Passthrough mode in use
 
@@ -152,6 +156,10 @@
 					$iv  = ENCRYPTION_DB_IV;
 					$key = ENCRYPTION_DB_KEY;
 				break;
+                case self::CRYPTMAN_MODE_WS:
+                    $iv  = ENCRYPTION_WS_IV;
+                    $key = ENCRYPTION_WS_KEY;
+                break;
 				default:
 					throw new \Exception('An unsupported mode has been supplied, exiting...', -1);
 			}
