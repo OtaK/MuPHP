@@ -42,11 +42,6 @@
         include __DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'; // model / controller
         $headCanvas = $modules[$pageName]['headCanvas'];
         $footCanvas = $modules[$pageName]['footCanvas'];
-        if (!\TakPHPLib\Accounts\userMan::loggedIn())
-        {
-            $headCanvas = 'head_loggedout';
-            $footCanvas = 'foot_loggedout';
-        }
 
         //$i18n->selectSection(\TakPHPLib\Locales\localeLoader::LOCALE_HEADER);
         $i18n->selectSection(\TakPHPLib\Locales\localeLoader::LOCALE_CONTENT);
