@@ -30,7 +30,7 @@
     {
         const
             VALIDATE_EMAIL = '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i',
-            VALIDATE_PHONE = '',
+            VALIDATE_PHONE = '/^0[1-9](([0-9]{2}[.]){4}|([0-9]{2}[-]{4})|([0-9]{2}[ ]{4}))$/',
             VALIDATE_WEBSITE = '';
 
         /**
@@ -42,7 +42,8 @@
          */
         public static function validate($data, $validationType)
         {
-            if ($validationType != self::VALIDATE_EMAIL) return false; // Check all the consts
+            if ($validationType !== self::VALIDATE_EMAIL 
+            || $validationType !== self::VALIDATE_PHONE) return false; // Check all the consts
             return (bool)preg_match($validationType, $data); // check and return
         }
     }
