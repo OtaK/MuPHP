@@ -111,6 +111,7 @@
             // need unencrypted data
             $this->_inputData = \TakPHPLib\Crypt\cryptMan::decrypt($this->_data['hashedData'], \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_WS);*/
             $this->_inputData = &$this->_data['data'];
+            return true;
         }
 
 
