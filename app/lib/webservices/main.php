@@ -153,9 +153,9 @@
             if (!(PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 4)) return; // Incompatible
 
             if ($val)
-                $this->_jsonOptions &= JSON_PRETTY_PRINT;
+                $this->_jsonOptions |= JSON_PRETTY_PRINT;
             else
-                $this->_jsonOptions |= ~JSON_PRETTY_PRINT;
+                $this->_jsonOptions &= ~JSON_PRETTY_PRINT;
         }
 
         public function setMode($mode = self::APWS_POST) { $this->_mode = $mode; }
