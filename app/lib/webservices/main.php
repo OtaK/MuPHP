@@ -145,16 +145,18 @@
             if ($val)
                 $this->_jsonOptions |= JSON_FORCE_OBJECT;
             else
-                $this->_jsonOptions &= JSON_FORCE_OBJECT;
+                $this->_jsonOptions &= ~JSON_FORCE_OBJECT;
         }
 
-        /*public function jsonPrettyPrint($val = false)
+        public function jsonPrettyPrint($val = false)
         {
+            if (!(PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 4)) return; // Incompatible
+
             if ($val)
                 $this->_jsonOptions &= JSON_PRETTY_PRINT;
             else
-                $this->_jsonOptions |= JSON_PRETTY_PRINT;
-        }*/
+                $this->_jsonOptions |= ~JSON_PRETTY_PRINT;
+        }
 
         public function setMode($mode = self::APWS_POST) { $this->_mode = $mode; }
         public function getMode() { return $this->_mode; }
