@@ -22,8 +22,9 @@
      * @subpackage Webservice Server
      * @author Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright Copyright (c) 2012, Mathieu AMIOT
-     * @version 1.0
+     * @version 1.1
      * @changelog
+     *      1.1 : Added PUT, HEAD, DELETE full support, full RESTful conformance
      *      1.0 : stable version, fixed most bugs
      *      0.7 : AJAX calls support implememented
      *      0.5 : first version that needs some testing
@@ -70,7 +71,8 @@
             APWS_POST = 0x01,
             APWS_GET = 0x02,
             APWS_PUT = 0x04,
-            APWS_DELETE = 0x08;
+            APWS_DELETE = 0x08,
+            APWS_HEAD = 0x16;
 
         /**
          * Abstract ctor forcing children to implement it (configuration part)
@@ -132,10 +134,17 @@
         {
             switch ($this->_mode)
             {
-                case self::APWS_GET: return $_GET;
+                case self::APWS_GET:
+                case self::APWS_HEAD:
+                    return $_GET;
+
                 case self::APWS_POST: return $_POST;
-                case self::APWS_DELETE: return $http_response_header['DELETE'];
-                case self::APWS_PUT: return $http_response_header['PUT'];
+
+                case self::APWS_DELETE:
+                case self::APWS_PUT:
+                    parse_str(file_get_contents('php://input'), $put);
+                    return $put;
+
                 default: return null;
             }
         }
