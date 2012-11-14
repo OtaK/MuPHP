@@ -52,6 +52,9 @@
             $_data,
             $_privateKey;
 
+        protected
+            $_uid;
+
         /**
          * @return string
          */
@@ -94,7 +97,8 @@
             // TODO Check api key
             list($found) = \TakPHPLib\DB\dbMan::get_instance()->singleResQuery("
                 SELECT id FROM users WHERE api_key = '%s'",
-                array($this->_apiKey)
+                array($this->_apiKey),
+                MYSQLI_NUM
             );
 
             if (!$found)
@@ -110,6 +114,7 @@
 
             // need unencrypted data
             $this->_inputData = \TakPHPLib\Crypt\cryptMan::decrypt($this->_data['hashedData'], \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_WS);*/
+            $this->_uid = $found;
             $this->_inputData = &$this->_data['data'];
             return true;
         }
