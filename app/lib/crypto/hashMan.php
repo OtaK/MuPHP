@@ -214,7 +214,8 @@
         {
             $itoa64 = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-            $output = '$2a$';
+            $phpMin537 = PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 3 && PHP_RELEASE_VERSION >= 7;
+            $output = $phpMin537 ? '$2y$' : '$2a$';
             $output .= chr(ord('0') + $this->_iterationCount / 10);
             $output .= chr(ord('0') + $this->_iterationCount % 10);
             $output .= '$';
