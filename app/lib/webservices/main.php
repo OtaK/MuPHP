@@ -178,6 +178,7 @@
          */
         public function run($echo = true)
         {
+            header('Content-Type: application/json');
             if (!$this->gatherInputData())
                 throw new apWsBadModeSupplied();
             $this->process();
