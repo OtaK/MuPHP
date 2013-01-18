@@ -102,7 +102,7 @@
             );
 
             if (!$found)
-                throw new apWsWrongAPIKeyException();
+                self::quit(new apWsWrongAPIKeyException());
 
           /*  list($this->_privateKey) = \TakPHPLib\DB\dbMan::get_instance()->singleResQuery("
                 SELECT user_private_key
