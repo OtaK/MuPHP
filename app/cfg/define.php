@@ -19,7 +19,6 @@
 
     // Base includes
     include_once __DIR__ . '/modules.php';
-    include_once __DIR__ . '/modules.php';
     if (!defined('AUTOLOAD') || AUTOLOAD)
     {
         include_once __DIR__ . '/autoloader.php';
