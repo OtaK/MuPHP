@@ -17,7 +17,7 @@
      *
      */
 
-    // Appel de toutes les pages(Views et Controllers) pour construire le site
+    // Calling all Controllers and Views to build the website
     include_once 'app/cfg/define.php'; // calling cfg file
 
     if (DEBUG)
