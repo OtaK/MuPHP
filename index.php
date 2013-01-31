@@ -22,29 +22,29 @@
 
     if (DEBUG)
     {
-        $siteBenchmark = new \TakPHPLib\Performance\benchmarker();
+        $siteBenchmark = new \MuPHP\Performance\benchmarker();
         $siteBenchmark->start();
     }
     $modules = getModules();
-    $acl = new \TakPHPLib\Auth\rightsMan($modules); // rights management object
+    $acl = new \MuPHP\Auth\rightsMan($modules); // rights management object
     session_start();
-    if (\TakPHPLib\Accounts\userMan::loggedIn())
-        $currentLocale = \TakPHPLib\Accounts\userMan::currentUser()->getUserLocale();
+    if (\MuPHP\Accounts\userMan::loggedIn())
+        $currentLocale = \MuPHP\Accounts\userMan::currentUser()->getUserLocale();
     else
         $currentLocale = DEFAULT_LOCALE;
 
     $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
-    $i18n = new \TakPHPLib\Locales\localeLoader($currentLocale);
+    $i18n = new \MuPHP\Locales\localeLoader($currentLocale);
 
     if ($auth = $acl->isAuthorized($pageName))
     {
-        //\TakPHPLib\Utils\utils::safeInclude(__DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'); // model / controller
+        //\MuPHP\Utils\utils::safeInclude(__DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'); // model / controller
         include __DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'; // model / controller
         $headCanvas = $modules[$pageName]['headCanvas'];
         $footCanvas = $modules[$pageName]['footCanvas'];
 
-        //$i18n->selectSection(\TakPHPLib\Locales\localeLoader::LOCALE_HEADER);
-        $i18n->selectSection(\TakPHPLib\Locales\localeLoader::LOCALE_CONTENT);
+        //$i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_HEADER);
+        $i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_CONTENT);
         $i18n->getPageNode($pageName); // translations
         include __DIR__.'/app/_tpl/canvas/'.$headCanvas.'.phtml'; // header
 
@@ -53,19 +53,19 @@
             include __DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml';
         }
 
-        $i18n->selectSection(\TakPHPLib\Locales\localeLoader::LOCALE_FOOTER);
+        $i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_FOOTER);
         include __DIR__.'/app/_tpl/canvas/'.$footCanvas.'.phtml'; // footer
 
-        /*\TakPHPLib\Utils\utils::safeInclude(__DIR__.'/app/_tpl/canvas/'.$headCanvas.'.phtml'); // header
-        \TakPHPLib\Utils\utils::safeInclude(__DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml'); // view
-        \TakPHPLib\Utils\utils::safeInclude(__DIR__.'/app/_tpl/canvas/'.$footCanvas.'.phtml'); // footer*/
+        /*\MuPHP\Utils\utils::safeInclude(__DIR__.'/app/_tpl/canvas/'.$headCanvas.'.phtml'); // header
+        \MuPHP\Utils\utils::safeInclude(__DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml'); // view
+        \MuPHP\Utils\utils::safeInclude(__DIR__.'/app/_tpl/canvas/'.$footCanvas.'.phtml'); // footer*/
     }
     else // error if hacker detected
         header('Location: '.BASE_URL); // Redirect to home / landing
 
     if (DEBUG)
     {
-        /** @var $siteBenchmark \TakPHPLib\Performance\benchmarker */
+        /** @var $siteBenchmark \MuPHP\Performance\benchmarker */
         $siteBenchmark->end();
         echo '<script type="text/javascript">$(\'#benchmark\').html(\''.$siteBenchmark->output('Generation', false).'\')</script>';
     }

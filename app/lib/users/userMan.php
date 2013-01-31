@@ -18,18 +18,18 @@
      */
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Accounts
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2011, Mathieu AMIOT
      * @version    1.0
      */
-    namespace TakPHPLib\Accounts;
+    namespace MuPHP\Accounts;
     require_once dirname(__FILE__) . '/../../cfg/define.php';
     require_once dirname(__FILE__) . '/../crypto/cryptMan.php';
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Accounts
      *             Class to manage an user, plus password encryption inside cookies
      */
@@ -62,7 +62,7 @@
                 $this->user_email       = $email;
                 $this->auth_level       = $authlevel;
                 $this->user_locale      = $locale;
-                $this->encrypted_passwd = \TakPHPLib\Crypt\cryptMan::encrypt($passwd);
+                $this->encrypted_passwd = \MuPHP\Crypt\cryptMan::encrypt($passwd);
             }
             else
                 $this->loadFromCookies();
@@ -75,7 +75,7 @@
          */
         public function setPassword($newClearPass)
         {
-            $this->encrypted_passwd = \TakPHPLib\Crypt\cryptMan::encrypt($newClearPass, \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
+            $this->encrypted_passwd = \MuPHP\Crypt\cryptMan::encrypt($newClearPass, \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
         }
 
         /* Getters and setters */
@@ -194,7 +194,7 @@
          */
         public function saveToCookies()
         {
-            $classData             = \TakPHPLib\Crypt\cryptMan::encrypt(serialize($this), \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
+            $classData             = \MuPHP\Crypt\cryptMan::encrypt(serialize($this), \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
             $_COOKIE['LOGIN_DATA'] = $classData;
             return setcookie('LOGIN_DATA', $classData, time() + 31536000, SITE_PATH, null, false, true);
         }
@@ -218,7 +218,7 @@
         public function loadFromCookies()
         {
             if (!isset($_COOKIE['LOGIN_DATA'])) return false;
-            $obj = unserialize(\TakPHPLib\Crypt\cryptMan::decrypt($_COOKIE['LOGIN_DATA'], \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_DATA));
+            $obj = unserialize(\MuPHP\Crypt\cryptMan::decrypt($_COOKIE['LOGIN_DATA'], \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA));
             if (get_class($obj) != 'userMan') return false;
             /** @var userMan $obj */
             $this->auth_level       = $obj->auth_level;
@@ -227,7 +227,7 @@
             $this->user_id          = $obj->user_id;
             $this->user_name        = $obj->user_name;
             $this->loggedIn         = $obj->loggedIn;
-            $data                   = \TakPHPLib\DB\dbMan::get_instance()->singleResQuery("SELECT * FROM users WHERE user_id = '%d'", array($this->user_id));
+            $data                   = \MuPHP\DB\dbMan::get_instance()->singleResQuery("SELECT * FROM users WHERE user_id = '%d'", array($this->user_id));
             if ($this->matchDbData($data))
             {
                 if ($this->loggedIn)
@@ -261,8 +261,8 @@
         {
             if (!isset($data['user_id'], $data['user_email'], $data['user_pwd'], $data['user_status'])) return false;
 
-            $clearPasswd            = \TakPHPLib\Crypt\cryptMan::decrypt($data['user_pwd'], \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_DB);
-            $this->encrypted_passwd = \TakPHPLib\Crypt\cryptMan::encrypt($clearPasswd, \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
+            $clearPasswd            = \MuPHP\Crypt\cryptMan::decrypt($data['user_pwd'], \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DB);
+            $this->encrypted_passwd = \MuPHP\Crypt\cryptMan::encrypt($clearPasswd, \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
             $this->auth_level       = $data['user_status'];
             $this->user_email       = $data['user_email'];
             $this->user_id          = $data['user_id'];
@@ -280,8 +280,8 @@
         {
             if (!isset($data['user_id'], $data['user_email'], $data['user_pwd'], $data['user_status'], $data['user_enabled'])) return false;
 
-            $clearDbPasswd   = \TakPHPLib\Crypt\cryptMan::decrypt($data['user_pwd'], \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_DB);
-            $clearThisPasswd = \TakPHPLib\Crypt\cryptMan::decrypt($this->encrypted_passwd, \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
+            $clearDbPasswd   = \MuPHP\Crypt\cryptMan::decrypt($data['user_pwd'], \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DB);
+            $clearThisPasswd = \MuPHP\Crypt\cryptMan::decrypt($this->encrypted_passwd, \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
 
             $result = (
                 $data['user_id'] == $this->user_id

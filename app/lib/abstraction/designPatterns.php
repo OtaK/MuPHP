@@ -18,7 +18,7 @@
      */
 
 	/**
-	 * @package TakPHPLib
+	 * @package MuPHP
 	 * @subpackage DesignPatterns
 	 * @author Mathieu AMIOT <m.amiot@otak-arts.com>
 	 * @copyright Copyright (c) 2011, Mathieu AMIOT
@@ -28,7 +28,7 @@
      *      1.1 : Added Observer/Observable patterns
      *      1.0 : initial release
 	 */
-    namespace TakPHPLib\DesignPatterns;
+    namespace MuPHP\DesignPatterns;
 
 
     /**

@@ -16,7 +16,7 @@
      * limitations under the License.
      *
      */
-    namespace TakPHPLib\Files;
+    namespace MuPHP\Files;
 
     class FileNotFoundException extends \Exception
     {
@@ -43,7 +43,7 @@
     }
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Files
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2012, Mathieu AMIOT

@@ -18,7 +18,7 @@
     */
 
     /**
-     * @package TakPHPLib
+     * @package MuPHP
      * @subpackage Webservice Server
      * @author Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright Copyright (c) 2012, Mathieu AMIOT
@@ -30,7 +30,7 @@
      *      0.5 : first version that needs some testing
      *      0.1a : in progress
      */
-    namespace TakPHPLib\WebserviceServer;
+    namespace MuPHP\WebserviceServer;
 
     class apWsWebserviceNotFoundException extends \Exception
     {
@@ -53,7 +53,7 @@
     }
 
     /**
-     * @package TakPHPLib
+     * @package MuPHP
      * @subpackage Webservice Server
      * apWs (All Purpose Webservice) is a modular class intended to manage all the possible needs
      * in webservice-driven applications such as iOS/Android apps, and coregistration services
@@ -87,9 +87,9 @@
          */
         static public function factory($name)
         {
-            if (file_exists(($fileName = __DIR__.'/includes/'.$name.'.php'))) include_once $fileName;
+            if (file_exists(($fileName = __DIR__.'/../../_api/'.$name.'.php'))) include_once $fileName;
             else throw new apWsWebserviceNotFoundException();
-            $className = '\TakPHPLib\WebserviceServer\apWs\\'.$name;
+            $className = '\MuPHP\WebserviceServer\apWs\\'.$name;
             if (class_exists($className)) return new $className();
             else throw new apWsWebserviceNotFoundException();
         }

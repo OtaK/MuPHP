@@ -16,10 +16,10 @@
      * limitations under the License.
      *
      */
-    namespace TakPHPLib\Utils;
+    namespace MuPHP\Utils;
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Utils
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2012, Mathieu AMIOT

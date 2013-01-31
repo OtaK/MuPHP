@@ -18,7 +18,7 @@
      */
 
 	/**
-	 * @package    TakPHPLib
+	 * @package    MuPHP
 	 * @subpackage Crypt
 	 * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
 	 * @copyright  Copyright (c) 2012, Mathieu AMIOT
@@ -29,7 +29,7 @@
 	 *      1.1 : moved configuration constants to class constants instead of project-wide defines
 	 *      1.0 : initial release
 	 */
-    namespace TakPHPLib\Crypt;
+    namespace MuPHP\Crypt;
 
     class MCryptNotInstalledException extends \Exception
     {
@@ -53,7 +53,7 @@
     define('ENCRYPTION_WS_KEY', 'SECRET WS KEY HERE');
 
 	/**
-	 * @package    TakPHPLib
+	 * @package    MuPHP
 	 * @subpackage Crypt
 	 * @throws     \Exception
 	 * Encrypts/Decrypts data with a set of constants that defines the engine in use, private keys and so on.

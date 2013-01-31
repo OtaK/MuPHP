@@ -18,7 +18,7 @@
      */
 
     /**
-     * @package TakPHPLib
+     * @package MuPHP
      * @subpackage ActiveRecord
      * @author Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright Copyright (c) 2012, Mathieu AMIOT
@@ -26,7 +26,7 @@
      * @changelog
      *      0.1dev : In dev
      */
-    namespace TakPHPLib\ActiveRecord;
+    namespace MuPHP\ActiveRecord;
     require_once __DIR__.'/dbMan.php';
 
     class TaktiveRecordSchema
@@ -37,7 +37,7 @@
 
         public function __construct()
         {
-            $this->_db = \TakPHPLib\DB\dbMan::get_instance();
+            $this->_db = \MuPHP\DB\dbMan::get_instance();
             $this->_db->autocommit(false);
             $this->buildSchema();
         }
@@ -110,7 +110,7 @@
             $this->_keyType         = $keyType;
         }
 
-        public function save() { \TakPHPLib\DB\dbMan::get_instance()->commit(); $this->_saveCurrentState(); }
+        public function save() { \MuPHP\DB\dbMan::get_instance()->commit(); $this->_saveCurrentState(); }
 
         private function _saveCurrentState()
         {
@@ -139,7 +139,7 @@
                 $prevName = $this->_previousState->fieldName;
 
             $var = $value;
-            \TakPHPLib\DB\dbMan::get_instance()->query("
+            \MuPHP\DB\dbMan::get_instance()->query("
                 ALTER TABLE %s
                 CHANGE %s %s %s %s %s",
                 array(
@@ -164,9 +164,9 @@
         /**
          * Ctor
          * @param dbField $field
-         * @param \TakPHPLib\DB\dbResult $res
+         * @param \MuPHP\DB\dbResult $res
          */
-        public function __construct(dbField &$field, \TakPHPLib\DB\dbResult &$res)
+        public function __construct(dbField &$field, \MuPHP\DB\dbResult &$res)
         {
             $this->_queryResult = $res;
             $this->_curData = $this->_queryResult->fetch_assoc();

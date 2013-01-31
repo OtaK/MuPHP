@@ -18,7 +18,7 @@
      */
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Debugger
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2012, Mathieu AMIOT
@@ -26,7 +26,7 @@
      * @changelog
      *      0.1a : in progress
      */
-    namespace TakPHPLib\Debug;
+    namespace MuPHP\Debug;
 
     class VariableNotDeclaredException extends \Exception
     {

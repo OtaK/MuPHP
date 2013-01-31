@@ -18,7 +18,7 @@
      */
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Hash
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2012, Mathieu AMIOT
@@ -26,10 +26,10 @@
      * @changelog
      *      1.0 : initial release
      */
-    namespace TakPHPLib\Hash;
+    namespace MuPHP\Hash;
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Hash
      * @throws     \Exception
      * One-way ciphering engine to hash data with the help of a salt, can do many passes to encrypt data

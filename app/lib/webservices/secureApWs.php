@@ -18,7 +18,7 @@
     */
 
     /**
-     * @package TakPHPLib
+     * @package MuPHP
      * @subpackage Webservice Server
      * @author Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright Copyright (c) 2012, Mathieu AMIOT
@@ -27,8 +27,8 @@
      *      0.1dev : in progress
      */
 
-    namespace TakPHPLib\WebserviceServer;
-    require_once __DIR__.'/main.php';
+    namespace MuPHP\WebserviceServer;
+    require_once __DIR__ . '/apWs.php';
 
     class apWsWrongAPIKeyException extends \Exception
     {
@@ -39,7 +39,7 @@
     }
 
     /**
-     * @package TakPHPLib
+     * @package MuPHP
      * @subpackage Webservice Server
      * secureApWs is a subclass of apWs which implements most secure mecanisms in web API providers
      */
@@ -95,7 +95,7 @@
 
             $this->_apiKey = $this->_data['apiKey'];
             // TODO Check api key
-            list($found) = \TakPHPLib\DB\dbMan::get_instance()->singleResQuery("
+            list($found) = \MuPHP\DB\dbMan::get_instance()->singleResQuery("
                 SELECT id FROM users WHERE api_key = '%s'",
                 array($this->_apiKey),
                 MYSQLI_NUM
@@ -104,7 +104,7 @@
             if (!$found)
                 self::quit(new apWsWrongAPIKeyException());
 
-          /*  list($this->_privateKey) = \TakPHPLib\DB\dbMan::get_instance()->singleResQuery("
+          /*  list($this->_privateKey) = \MuPHP\DB\dbMan::get_instance()->singleResQuery("
                 SELECT user_private_key
                 FROM user_keys
                 WHERE api_key = '%s'",
@@ -113,7 +113,7 @@
             if (!$this->_privateKey) return;
 
             // need unencrypted data
-            $this->_inputData = \TakPHPLib\Crypt\cryptMan::decrypt($this->_data['hashedData'], \TakPHPLib\Crypt\cryptMan::CRYPTMAN_MODE_WS);*/
+            $this->_inputData = \MuPHP\Crypt\cryptMan::decrypt($this->_data['hashedData'], \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_WS);*/
             $this->_uid = $found;
             $this->_inputData = &$this->_data['data'];
             return true;

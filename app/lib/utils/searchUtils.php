@@ -18,7 +18,7 @@
      */
 
 	/**
-	 * @package    TakPHPLib
+	 * @package    MuPHP
 	 * @subpackage Search
 	 * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
 	 * @copyright  Copyright (c) 2011, Mathieu AMIOT
@@ -29,12 +29,12 @@
      *      0.7a : Unstable first version
      * @todo Implement the way to have multiple fields to search keywords in
 	 */
-    namespace TakPHPLib\Search;
+    namespace MuPHP\Search;
 	require_once dirname(__FILE__) . '/../../cfg/define.php';
 
 
 	/**
-	 * @package    TakPHPLib
+	 * @package    MuPHP
 	 * @subpackage Search
      *     Generic search engine
 	 */
@@ -270,7 +270,7 @@
 		 */
 		private function processQuery($query, array $params = array())
 		{
-			$dbResult = \TakPHPLib\DB\dbMan::get_instance()->query($query, $params);
+			$dbResult = \MuPHP\DB\dbMan::get_instance()->query($query, $params);
 			if (!$dbResult) return false;
 
 			while ($data = $dbResult->fetch_assoc(true))

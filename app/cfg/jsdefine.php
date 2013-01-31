@@ -5,8 +5,8 @@
 
     define('AUTOLOAD', false);
     include_once 'define.php';
-    $i18n = new \TakPHPLib\Locales\localeLoader($shortLocale);
-    $i18n->selectSection(\TakPHPLib\Locales\localeLoader::LOCALE_DIALOGS);
+    $i18n = new \MuPHP\Locales\localeLoader($shortLocale);
+    $i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_DIALOGS);
 
     $config = array(
         'DEBUG' => DEBUG,

@@ -18,7 +18,7 @@
      */
 
    /**
-	 * @package TakPHPLib
+	 * @package MuPHP
 	 * @subpackage Auth
 	 * @author Mathieu AMIOT <m.amiot@otak-arts.com>
 	 * @copyright Copyright (c) 2012, Mathieu AMIOT
@@ -27,10 +27,10 @@
      *      1.1 : Introduction of namespace use
 	 *      1.0 : initial release
 	 */
-    namespace TakPHPLib\Auth;
+    namespace MuPHP\Auth;
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Auth
      *             Manages the rights of users across pages of the website specified in the $modules arg of the ctor
      */
@@ -69,10 +69,10 @@
 
             if (self::$_siteModules[$pageName]['registeredOnly'])
             {
-                if (\TakPHPLib\Accounts\userMan::loggedIn())
+                if (\MuPHP\Accounts\userMan::loggedIn())
                 {
                     if (self::$_siteModules[$pageName]['adminOnly'])
-                        return (\TakPHPLib\Accounts\userMan::currentUser()->isAdmin());
+                        return (\MuPHP\Accounts\userMan::currentUser()->isAdmin());
 
                     return true;
                 }

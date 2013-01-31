@@ -17,7 +17,7 @@
      */
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Locales
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2012, Mathieu AMIOT
@@ -26,7 +26,7 @@
      *      0.5a : first stable alpha
      *      0.1 : pre-version
      */
-    namespace TakPHPLib\Locales;
+    namespace MuPHP\Locales;
     include_once __DIR__ . '/../../cfg/define.php';
 
     class LocaleNotFoundException extends \Exception

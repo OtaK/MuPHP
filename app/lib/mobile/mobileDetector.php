@@ -18,7 +18,7 @@
      */
 
 	/**
-	 * @package    TakPHPLib
+	 * @package    MuPHP
 	 * @subpackage Mobile
 	 * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
 	 * @copyright  Copyright (c) 2012, Mathieu AMIOT
@@ -26,7 +26,7 @@
 	 * @changelog
 	 *      0.1 : pre-version
 	 */
-	namespace TakPHPLib\Mobile;
+	namespace MuPHP\Mobile;
 
 	class mobileDetector
 	{

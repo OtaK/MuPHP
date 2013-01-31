@@ -18,17 +18,17 @@
      */
 
 	/**
-	 * @package TakPHPLib
+	 * @package MuPHP
 	 * @subpackage CookieFav
 	 * @author Mathieu AMIOT <m.amiot@otak-arts.com>
 	 * @copyright Copyright (c) 2011, Mathieu AMIOT
 	 * @version 1.0
 	 */
-    namespace TakPHPLib\CookieFav;
+    namespace MuPHP\CookieFav;
 	require_once dirname(__FILE__) . '/../../cfg/define.php';
 
 	/**
-	 * @package TakPHPLib
+	 * @package MuPHP
 	 * @subpackage CookieFav
 	 * Allows to manage per-user favorites inside a serialized cookie
 	 */
@@ -62,7 +62,7 @@
                 self::$data = array();
 
 	        @session_start();
-	        if (\TakPHPLib\Accounts\userMan::loggedIn())
+	        if (\MuPHP\Accounts\userMan::loggedIn())
 	            self::$uid = $_SESSION['USER_DATA']->getUserId();
 	        else
 		        self::$uid = false;

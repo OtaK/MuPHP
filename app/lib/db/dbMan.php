@@ -18,7 +18,7 @@
      */
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage DB
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2012, Mathieu AMIOT
@@ -33,14 +33,14 @@
      *      1.0 : security and backwards compatibility fixes with PHP 5.2.x
      *      0.9b : initial release
      */
-    namespace TakPHPLib\DB;
+    namespace MuPHP\DB;
     require_once __DIR__ . '/../abstraction/designPatterns.php';
 
     /**
      * dbMan is an overlay (and a singleton) to MySQLi and allows queries to be automatically escaped against SQL injections
      * It depends on the dbResult class further below in this subpackage
      */
-    class dbMan extends \mysqli implements \TakPHPLib\DesignPatterns\iSingleton
+    class dbMan extends \mysqli implements \MuPHP\DesignPatterns\iSingleton
     {
         /** @var dbMan $_instance           Singleton instance */
         private static $_instance;
@@ -158,7 +158,7 @@
 
 	        /*if (strpos($query, '%vs') !== false || strpos($query, '%vd') !== false)
                 $this->filterCompositeArgs($query, $params);*/
-            array_walk($params, '\TakPHPLib\DB\dbMan::escapeCallback', $this);
+            array_walk($params, '\MuPHP\DB\dbMan::escapeCallback', $this);
             return vsprintf($query, $params);
         }
 
@@ -254,7 +254,7 @@
     }
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage DB
      *             dbResult is an overlay to MySQLi_Result
      *             It allows to escape results produced by dbMan::query() against XSS attacks
@@ -461,7 +461,7 @@
             if ($res)
             {
                 ++$this->_recordNumber;
-                if ($xss) array_walk($res, '\TakPHPLib\DB\dbResult::xssProtectCallback');
+                if ($xss) array_walk($res, '\MuPHP\DB\dbResult::xssProtectCallback');
             }
             return $this->_currentRecord = &$res;
         }
@@ -506,7 +506,7 @@
         public function fetch_fields($xss = false)
         {
             $res = $this->_innerRes->fetch_fields();
-            if ($xss && $res) array_walk($res, '\TakPHPLib\DB\dbResult::xssProtectCallback');
+            if ($xss && $res) array_walk($res, '\MuPHP\DB\dbResult::xssProtectCallback');
             return $res;
         }
 
@@ -534,7 +534,7 @@
             else
                 for ($res = array(); $tmp = $this->_innerRes->fetch_array($resulttype);) $res[] = $tmp;
 
-            if ($xss && $res) array_walk_recursive($res, '\TakPHPLib\DB\dbResult::xssProtectCallback');
+            if ($xss && $res) array_walk_recursive($res, '\MuPHP\DB\dbResult::xssProtectCallback');
             return $res;
         }
 

@@ -18,7 +18,7 @@
      */
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Performance
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2012, Mathieu AMIOT
@@ -26,7 +26,7 @@
      * @changelog
      *      1.0 : initial release
      */
-    namespace TakPHPLib\Performance;
+    namespace MuPHP\Performance;
     /**
      * Allows to benchmark a part of code, with different units/precision
      */

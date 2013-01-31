@@ -18,7 +18,7 @@
      */
 
     /**
-     * @package    TakPHPLib
+     * @package    MuPHP
      * @subpackage Accounts
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2011, Mathieu AMIOT
@@ -27,7 +27,7 @@
      *      1.1 : Several bugfixes
      *      1.0 : initial release
      */
-    namespace TakPHPLib\Accounts;
+    namespace MuPHP\Accounts;
     require_once __DIR__ . '/userMan.php';
 
     class fbUserManNotConfiguredException extends \Exception
@@ -70,7 +70,7 @@
             // Insert / Update FB User data into DB associated user account
             $internalData = $this->isRegistered();
             if (!$this->registerOrUpdate($fbData, $internalData))
-                throw new \Exception(\TakPHPLib\DB\dbMan::get_instance()->error);
+                throw new \Exception(\MuPHP\DB\dbMan::get_instance()->error);
 
             // Call to parent userMan methods
             parent::__construct($internalData['user_id'], $internalData['user_email'], $internalData['user_pass'], $internalData['user_status']);
@@ -94,7 +94,7 @@
          */
         protected function isRegistered()
         {
-            $res = \TakPHPLib\DB\dbMan::get_instance()->singleResQuery("
+            $res = \MuPHP\DB\dbMan::get_instance()->singleResQuery("
                 SELECT *
                 FROM users
                 WHERE user_fb_id = %d",
@@ -108,7 +108,7 @@
         /**
          * @param array $fbData         FB data from JSON Response
          * @param array &$internalData  Internal data after insert into DB
-         * @return bool|\TakPHPLib\DB\dbResult
+         * @return bool|\MuPHP\DB\dbResult
          */
         protected function registerOrUpdate(array $fbData, array &$internalData)
         {
@@ -125,7 +125,7 @@
             $userCity = explode(',', $fbData['user']['location']['name']);
             $userCity = $userCity[0];
 
-            $res = \TakPHPLib\DB\dbMan::get_instance()->query('
+            $res = \MuPHP\DB\dbMan::get_instance()->query('
                 INSERT INTO users
                 SET
                     user_email = \'%1$s\',
@@ -162,7 +162,7 @@
             ));
 
             if ($register)
-                $internalData['user_id'] = \TakPHPLib\DB\dbMan::get_instance()->insert_id;
+                $internalData['user_id'] = \MuPHP\DB\dbMan::get_instance()->insert_id;
 
             return $res;
         }

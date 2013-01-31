@@ -1,5 +1,8 @@
 RewriteEngine On
-RewriteBase /TakPHPLib/
+RewriteBase /MuPHP/
+
+# API
+RewriteRule ^api/(\w+)/?$ api.php?ws=$1 [L,QSA]
 
 # Medias
 RewriteRule ^.+/media/(.+)$ media/$1 [L]

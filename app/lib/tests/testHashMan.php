@@ -4,7 +4,7 @@
 	header('Content-type: text/plain');
 
 	$ok = 0;
-	$hasher = new \TakPHPLib\Hash\hashMan(8, false);
+	$hasher = new \MuPHP\Hash\hashMan(8, false);
 
 	$correct = 'test12345';
 	$hash = $hasher->hashData($correct);
@@ -22,7 +22,7 @@
 
 	unset($hasher);
 
-	$hasher = new \TakPHPLib\Hash\hashMan(8, true);
+	$hasher = new \MuPHP\Hash\hashMan(8, true);
 	$hash = $hasher->hashData($correct);
 
 	echo 'Hash: ' . $hash . "\n";

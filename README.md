@@ -1,4 +1,4 @@
-#TakPHPLib
+#MuPHP
 ##Framework MVC PHP 
 ###by OtaK_ // Mathieu Amiot <http://mathieu-amiot.fr>
 ###<m.amiot@otak-arts.com>
