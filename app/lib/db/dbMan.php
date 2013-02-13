@@ -134,6 +134,7 @@
         {
             if (!parent::select_db($dbname))
                 throw new \Exception('The database could not be selected ! Exiting...');
+            $this->db = $dbname;
             return $this;
         }
 
