@@ -22,8 +22,9 @@
      * @subpackage DB
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2012, Mathieu AMIOT
-     * @version    1.5
+     * @version    1.5.1
      * @changelog
+     *      1.5.1 : Added db name property
      *      1.5 : Added iteration modes and XSS protection mode to dbResult
      *      1.4.1 : Added design pattern usage hint to dbMan
      *      1.4 : Added Iterator support to dbResult, so it can be browsed with a foreach loop
@@ -46,6 +47,8 @@
         private static $_instance;
         /** @var array $_connectionInfo     Saved connection info for connection updates */
         private static $_connectionInfo;
+        
+        public $db;
 
         /**
          * Ctor
@@ -57,6 +60,7 @@
         protected function __construct($host = DBHOST, $user = DBUSER, $pass = DBPWD, $dbName = DBBASE)
         {
             parent::__construct($host, $user, $pass, $dbName);
+            $this->db = $dbName;
             parent::set_charset('utf8');
         }
 
