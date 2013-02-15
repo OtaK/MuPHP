@@ -62,7 +62,6 @@
                 $this->user_id          = $uid;
                 $this->user_email       = $email;
                 $this->auth_level       = $authlevel;
-                $this->user_name        = '';
                 $this->user_locale      = $locale;
                 $this->user_name        = $username;
                 $this->encrypted_passwd = \MuPHP\Crypt\cryptMan::encrypt($passwd);
