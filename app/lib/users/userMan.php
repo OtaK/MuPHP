@@ -52,8 +52,9 @@
          * @param string $passwd    Password *not* encrypted (yet)
          * @param string $authlevel User rank
          * @param string $locale    Default locale
+         * @param string $username  User name
          */
-        public function __construct($uid = -1, $email = '', $passwd = '', $authlevel = 'USER', $locale = DEFAULT_LOCALE)
+        public function __construct($uid = -1, $email = '', $passwd = '', $authlevel = 'USER', $locale = DEFAULT_LOCALE, $username = '')
         {
             $this->loggedIn = false;
             if ($uid !== -1)
@@ -63,6 +64,7 @@
                 $this->auth_level       = $authlevel;
                 $this->user_name        = '';
                 $this->user_locale      = $locale;
+                $this->user_name        = $username;
                 $this->encrypted_passwd = \MuPHP\Crypt\cryptMan::encrypt($passwd);
             }
             else
