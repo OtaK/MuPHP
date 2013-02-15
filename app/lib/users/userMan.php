@@ -128,7 +128,7 @@
 
         public function isAdmin()
         {
-            return $this->auth_level != 'USER';
+            return $this->auth_level === 'ADMIN';
         }
 
         public function userLoggedIn()
