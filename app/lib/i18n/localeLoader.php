@@ -203,14 +203,17 @@
             }
             return $res;
         }
-
+        
         /**
-         * Gets the current page title
+         * Gets or sets the current page title
+         * @param string $title     Custom page title
          * @return string
          */
-        public function getPageTitle()
+        public function getPageTitle($title = '')
         {
-            return (isset($this->_currentPageTitle) ? $this->_currentPageTitle : '');
+            if (empty($title))
+                return (isset($this->_currentPageTitle) ? $this->_currentPageTitle : '');
+            return $title;
         }
 
         /**
