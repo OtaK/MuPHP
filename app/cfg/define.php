@@ -30,10 +30,9 @@
         include_once __DIR__ . '/../lib/i18n/localeLoader.php';
         include_once __DIR__ . '/../lib/utils/utils.php';
     }
-    /*include_once __DIR__ . '/../lib/users/rightsMan.php';
-    include_once __DIR__ . '/../lib/users/userMan.php';
-    include_once __DIR__ . '/../lib/db/dbMan.php';
-    include_once __DIR__ . '/../lib/i18n/localeLoader.php';*/
+    
+    // XSS attack protection for identity thief
+    ini_set('session.cookie_httponly', true);
 
     // DB & Site Path Constants
     if ($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1') // Development site
