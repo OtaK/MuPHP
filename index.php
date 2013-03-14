@@ -25,40 +25,28 @@
         $siteBenchmark = new \MuPHP\Performance\benchmarker();
         $siteBenchmark->start();
     }
+
     $modules = getModules();
     $acl = new \MuPHP\Auth\rightsMan($modules); // rights management object
-    session_start();
-    if (\MuPHP\Accounts\userMan::loggedIn())
-        $currentLocale = \MuPHP\Accounts\userMan::currentUser()->getUserLocale();
-    else
-        $currentLocale = DEFAULT_LOCALE;
+    @session_start();
+    $currentLocale = \MuPHP\Accounts\userMan::loggedIn() ? \MuPHP\Accounts\userMan::currentUser()->getUserLocale() : DEFAULT_LOCALE;
 
     $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
     $i18n = new \MuPHP\Locales\localeLoader($currentLocale);
+    $locales = getLocales();
 
-    if ($auth = $acl->isAuthorized($pageName))
+    if ($acl->isAuthorized($pageName))
     {
-        //\MuPHP\Utils\utils::safeInclude(__DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'); // model / controller
-        include __DIR__.'/app/_ctl/'.$modules[$pageName]['fileName'].'.php'; // model / controller
-        $headCanvas = $modules[$pageName]['headCanvas'];
-        $footCanvas = $modules[$pageName]['footCanvas'];
+        $module = \MuPHP\MVC\Module::factory($pageName);
+        $module->setModulesArray($modules);
+        $module->setIntlEngine($i18n);
 
-        //$i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_HEADER);
-        $i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_CONTENT);
-        $i18n->getPageNode($pageName); // translations
-        include __DIR__.'/app/_tpl/canvas/'.$headCanvas.'.phtml'; // header
+        if (isset($modules[$pageName]['headCanvas']))
+            $module->setHeadCanvas($modules[$pageName]['headCanvas']);
+        if (isset($modules[$pageName]['footCanvas']))
+            $module->setFootCanvas($modules[$pageName]['footCanvas']);
 
-        if (file_exists(__DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml')) // view
-        {
-            include __DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml';
-        }
-
-        $i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_FOOTER);
-        include __DIR__.'/app/_tpl/canvas/'.$footCanvas.'.phtml'; // footer
-
-        /*\MuPHP\Utils\utils::safeInclude(__DIR__.'/app/_tpl/canvas/'.$headCanvas.'.phtml'); // header
-        \MuPHP\Utils\utils::safeInclude(__DIR__.'/app/_tpl/'.$modules[$pageName]['fileName'].'.phtml'); // view
-        \MuPHP\Utils\utils::safeInclude(__DIR__.'/app/_tpl/canvas/'.$footCanvas.'.phtml'); // footer*/
+        $module->run();
     }
     else // error if hacker detected
         header('Location: '.BASE_URL); // Redirect to home / landing
