@@ -42,6 +42,11 @@
         define('DBUSER', 'root');
         define('DBPWD', '');
         define('DBBASE', '');
+        
+        define('REDIS_HOST', 'localhost');
+        define('REDIS_PORT', '6379');
+        define('REDIS_KEYPREFIX', 'mu');
+        
         $sitePath = '/MuPHP/'; // Change this according to your environment
     }
     else // Production constants
@@ -51,6 +56,11 @@
         define('DBUSER', '');
         define('DBPWD', '');
         define('DBBASE', '');
+        
+        define('REDIS_HOST', 'localhost');
+        define('REDIS_PORT', '6379');
+        define('REDIS_KEYPREFIX', 'mu');
+        
         $sitePath = '/'; // And change this too, but it should not, if you're at the root of your domain
     }
 
@@ -66,6 +76,9 @@
     define('SHORT_LOCALE', $shortLocale);
 
     setlocale(LC_TIME, $currentLocale.'.UTF8'); // Locale definition for time expression
+
+    // Redis automatically cached queries keys prefix
+    define('REDIS_SQLCACHE_PREFIX', REDIS_KEYPREFIX.'_dbcache');
 
     // Website constants
     define('SITE_PATH', $sitePath); // Real path to website root
