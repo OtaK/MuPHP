@@ -42,7 +42,7 @@
     }
 
     /**
-     * Class provinding the base structure of a singleton
+     * Class providing the base structure of a singleton
      * @abstract
      */
     abstract class Singleton implements iSingleton
@@ -206,7 +206,7 @@
 
         /**
          * Ctor
-         * @param Closure $callback
+         * @param \Closure $callback
          */
         public function __construct(\Closure &$callback) { $this->_callback = $callback; }
 
