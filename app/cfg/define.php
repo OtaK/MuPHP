@@ -19,6 +19,7 @@
 
     // Base includes
     include_once __DIR__ . '/modules.php';
+    include_once __DIR__ . '/locales.php';
     if (!defined('AUTOLOAD') || AUTOLOAD)
     {
         include_once __DIR__ . '/autoloader.php';
@@ -29,6 +30,7 @@
         include_once __DIR__ . '/../lib/users/userMan.php';
         include_once __DIR__ . '/../lib/i18n/localeLoader.php';
         include_once __DIR__ . '/../lib/utils/utils.php';
+        include_once __DIR__ . '/../lib/mvc/Module.php';
         include_once __DIR__ . '/../lib/cache/CacheProvider.php';
     }
     
@@ -66,7 +68,9 @@
     }
 
     // Locale definition
-    define('DEFAULT_LOCALE', 'fr_FR'); // i18n file to call
+    $locales = getLocales();
+    $firstLocale = reset($locales);
+    define('DEFAULT_LOCALE', $firstLocale['locale']); // i18n file to call
 
     $currentLocale = DEFAULT_LOCALE; // Runtime locale definitions
     if (\MuPHP\Accounts\userMan::loggedIn())
@@ -93,3 +97,9 @@
 
     // Utilities
     define('REGEXP_EMAIL', '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i'); // Regexp used for email validation
+
+    if (DEBUG)
+    {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+    }
