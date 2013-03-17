@@ -89,6 +89,11 @@
             $this->_render();
         }
 
+        function index()
+        {
+            // STUB
+        }
+
         /**
          *
          */
