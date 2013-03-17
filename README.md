@@ -4,7 +4,7 @@
 ###<m.amiot@otak-arts.com>
 
 ```  
-Copyright 2013 Mathieu "OtaK_" Amiot
+Copyright 2012 Mathieu "OtaK_" Amiot 
 <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
 
 Licensed under the Apache License, Version 2.0 (the "License");

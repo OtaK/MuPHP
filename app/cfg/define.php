@@ -1,7 +1,7 @@
 <?php
 
     /*
-     * Copyright 2013 Mathieu "OtaK_" Amiot <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
+     * Copyright 2012 Mathieu "OtaK_" Amiot <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
      *
      * Licensed under the Apache License, Version 2.0 (the "License");
      * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@
         include_once __DIR__ . '/../lib/users/userMan.php';
         include_once __DIR__ . '/../lib/i18n/localeLoader.php';
         include_once __DIR__ . '/../lib/utils/utils.php';
-        include_once __DIR__ . '/../lib/cache/CacheProvider.php';
     }
     
     // XSS attack protection for identity thief
@@ -79,7 +78,6 @@
     setlocale(LC_TIME, $currentLocale.'.UTF8'); // Locale definition for time expression
 
     // Redis automatically cached queries keys prefix
-    define('CACHE_DEFAULT_ENGINE', \MuPHP\Cache\CacheProvider::CACHE_REDIS);
     define('CACHE_SQLCACHE_PREFIX', CACHE_KEYPREFIX.':dbcache:');
 
     // Website constants

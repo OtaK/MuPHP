@@ -1,7 +1,7 @@
 <?php
 
     /*
-     * Copyright 2013 Mathieu "OtaK_" Amiot <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
+     * Copyright 2012 Mathieu "OtaK_" Amiot <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
      *
      * Licensed under the Apache License, Version 2.0 (the "License");
      * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 	 * @package MuPHP
 	 * @subpackage DataValidation
 	 * @author Mathieu AMIOT <m.amiot@otak-arts.com>
-	 * @copyright Copyright (c) 2013, Mathieu AMIOT
+	 * @copyright Copyright (c) 2012, Mathieu AMIOT
 	 * @version 1.0
 	 * @changelog
      *      1.0 : initial release
