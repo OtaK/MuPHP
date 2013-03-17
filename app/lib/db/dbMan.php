@@ -1,7 +1,7 @@
 <?php
 
     /*
-     * Copyright 2012 Mathieu "OtaK_" Amiot <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
+     * Copyright 2013 Mathieu "OtaK_" Amiot <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
      *
      * Licensed under the Apache License, Version 2.0 (the "License");
      * you may not use this file except in compliance with the License.
@@ -21,9 +21,10 @@
      * @package    MuPHP
      * @subpackage DB
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
-     * @copyright  Copyright (c) 2012, Mathieu AMIOT
-     * @version    1.5.1
+     * @copyright  Copyright (c) 2013, Mathieu AMIOT
+     * @version    1.6
      * @changelog
+     *      1.6 : Added cached query support
      *      1.5.1 : Added db name property
      *      1.5 : Added iteration modes and XSS protection mode to dbResult
      *      1.4.1 : Added design pattern usage hint to dbMan
@@ -36,6 +37,7 @@
      */
     namespace MuPHP\DB;
     require_once __DIR__ . '/../abstraction/designPatterns.php';
+    require_once __DIR__ . '/../cache/CacheProvider.php';
 
     /**
      * dbMan is an overlay (and a singleton) to MySQLi and allows queries to be automatically escaped against SQL injections
@@ -47,7 +49,8 @@
         private static $_instance;
         /** @var array $_connectionInfo     Saved connection info for connection updates */
         private static $_connectionInfo;
-        
+
+        /** @var string */
         public $db;
 
         /**
@@ -151,6 +154,34 @@
         }
 
         /**
+         * Executes a safe query using the current caching mechanism (cached if select only)
+         * @param $query
+         * @param array $params
+         * @return array|bool|dbResult|string
+         */
+        public function cachedQuery($query, array $params = array())
+        {
+            if (stripos($query, 'select') === false)
+                return $this->query($query, $params);
+
+            $safeQ = $this->safeQuery($query, $params);
+            $cacheKey = CACHE_SQLCACHE_PREFIX.md5($safeQ);
+            $cacheRes = \MuPHP\Cache\CacheProvider::get_instance()->get($cacheKey);
+            if ($cacheRes !== false)
+                return $cacheRes;
+
+            $queryRes = parent::query($safeQ);
+            if (is_bool($queryRes))
+                return $queryRes;
+
+            $queryRes = new dbResult($queryRes);
+            /** @var $queryRes dbResult */
+            $cacheRes = $queryRes->fetch_all(MYSQLI_ASSOC);
+            \MuPHP\Cache\CacheProvider::get_instance()->set($cacheKey, $cacheRes);
+            return $cacheRes;
+        }
+
+        /**
          * Generates an escaped query secure against SQL Injections
          * @param       $query
          * @param array $params
@@ -181,7 +212,7 @@
 
         /**
          * @static
-         * @param       $query
+         * @param string $query
          * @param array $params
          */
         private static function filterCompositeArgs(&$query, array $params = array())
@@ -537,7 +568,7 @@
             if (method_exists($this->_innerRes, 'fetch_all')) // Compatibility layer with PHP < 5.3
                 $res = $this->_innerRes->fetch_all($resulttype);
             else
-                for ($res = array(); $tmp = $this->_innerRes->fetch_array($resulttype);) $res[] = $tmp;
+                for ($res = array(); $tmp = $this->_innerRes->fetch_array($resulttype); $res[] = $tmp);
 
             if ($xss && $res) array_walk_recursive($res, '\MuPHP\DB\dbResult::xssProtectCallback');
             return $res;
