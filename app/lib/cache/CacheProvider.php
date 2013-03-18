@@ -50,8 +50,9 @@
      * @subpackage Cache
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2013, Mathieu AMIOT
-     * @version    1.0
+     * @version    1.1
      * @changelog
+     *      1.1 : Added increment and decrement methods to cache provider
      *      1.0 : Initial release
      */
     class CacheProvider extends \MuPHP\DesignPatterns\Singleton
@@ -256,6 +257,50 @@
                 $result = array_combine($keys, $this->_provider->mget($mKeys));
 
             return $result;
+        }
+        
+        /**
+         * Increment provided key by value
+         * @param     $key
+         * @param int $value
+         * @return bool|void
+         * @throws CacheEngineNotSet
+         */
+        public function increment($key, $value = 1)
+        {
+            if ($this->_currentProvider === self::CACHE_NONE)
+                throw new CacheEngineNotSet();
+
+            $val = false;
+            $prefixKey = $this->_prefixKey($key);
+            if ($this->_currentProvider === self::CACHE_MEMCACHE)
+                $val = $this->_provider->increment($prefixKey, $value);
+            else if ($this->_currentProvider === self::CACHE_REDIS)
+                $val = $this->_provider->incrBy($prefixKey, $value);
+
+            return $val;
+        }
+
+        /**
+         * Decrement provided key by value
+         * @param     $key
+         * @param int $value
+         * @return bool|void
+         * @throws CacheEngineNotSet
+         */
+        public function decrement($key, $value = 1)
+        {
+            if ($this->_currentProvider === self::CACHE_NONE)
+                throw new CacheEngineNotSet();
+
+            $val = false;
+            $prefixKey = $this->_prefixKey($key);
+            if ($this->_currentProvider === self::CACHE_MEMCACHE)
+                $val = $this->_provider->decrement($prefixKey, $value);
+            else if ($this->_currentProvider === self::CACHE_REDIS)
+                $val = $this->_provider->decrBy($prefixKey, $value);
+
+            return $val;
         }
 
         /**
