@@ -84,6 +84,11 @@
 
     // Redis automatically cached queries keys prefix
     define('CACHE_DEFAULT_ENGINE', \MuPHP\Cache\CacheProvider::CACHE_REDIS);
+    if (CACHE_DEFAULT_ENGINE === \MuPHP\Cache\CacheProvider::CACHE_REDIS)
+    {
+        ini_set('session.save_handler', 'redis');
+        ini_set('session.save_path', 'tcp://localhost:6379/');
+    }
     define('CACHE_SQLCACHE_PREFIX', CACHE_KEYPREFIX.':dbcache:');
 
     // Website constants
