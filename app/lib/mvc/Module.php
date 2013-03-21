@@ -10,15 +10,22 @@
      */
     abstract class Module implements \MuPHP\DesignPatterns\Factory
     {
+        const
+            FOOT_CANVAS = 'foot',
+            HEAD_CANVAS = 'head',
+            AUTH_REGISTERED = false,
+            AUTH_ADMIN = false;
+
+        protected static $_modules = null;
+        public static $MENU_ITEM = null;
+
         protected
             $_fileName,
             $_tplVars,
             $_posted,
             $_actionCalled,
             $_i18n,
-            $_headCanvas,
-            $_footCanvas,
-            $_modules;
+            $_includedTemplates;
 
         /**
          * Ctor
@@ -56,30 +63,6 @@
         }
 
         /**
-         * @param $fileName
-         */
-        public function setHeadCanvas($fileName)
-        {
-            $this->_headCanvas = $fileName;
-        }
-
-        /**
-         * @param $fileName
-         */
-        public function setFootCanvas($fileName)
-        {
-            $this->_footCanvas = $fileName;
-        }
-
-        /**
-         * @param $modules
-         */
-        public function setModulesArray(&$modules)
-        {
-            $this->_modules = $modules;
-        }
-
-        /**
          *
          */
         public function run()
@@ -89,17 +72,16 @@
             $this->_render();
         }
 
-        function index()
-        {
-            // STUB
-        }
+        /**
+         * STUB
+         */
+        function index() {}
 
         /**
-         *
+         * STUB
          */
         protected function _compute()
         {
-            // STUB
             $this->index();
         }
 
@@ -110,19 +92,27 @@
         {
             $this->_i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_CONTENT);
             $this->_i18n->getPageNode($this->_fileName);
-            $headFile = __DIR__.'/../../_tpl/canvas/' . $this->_headCanvas . '.phtml';
+            $headFile = __DIR__.'/../../_tpl/_canvas/' . self::HEAD_CANVAS . '.phtml';
             if (file_exists($headFile))
                 include $headFile;
 
-            $tplName = __DIR__.'/../../_tpl/' . $this->_fileName . '.phtml';
-            if (!file_exists($tplName))
-                throw new \Exception('Template file not found! path='.$tplName);
 
             extract($this->_tplVars, EXTR_OVERWRITE|EXTR_REFS);
-            include $tplName;
+            if (!empty($this->_includedTemplates))
+            {
+                foreach ($this->_includedTemplates as $template)
+                {
+                    if (!file_exists($template)) continue;
+                    include $template;
+                }
+            }
+            else if (file_exists(($tplFile = __DIR__."/../../_tpl/{$this->_fileName}/index.phtml")))
+                include $tplFile;
+            else
+                throw new \Exception('No template file found! path='.$tplFile);
 
             $this->_i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_FOOTER);
-            $footFile = __DIR__.'/../../_tpl/canvas/' . $this->_footCanvas . '.phtml';
+            $footFile = __DIR__.'/../../_tpl/_canvas/' . self::FOOT_CANVAS . '.phtml';
             if (file_exists($footFile))
                 include $footFile;
         }
@@ -147,7 +137,7 @@
 
             $userAuthLevel = \MuPHP\Accounts\userMan::loggedIn() ? \MuPHP\Accounts\userMan::currentUser()->getAuthLevel() : null;
 
-            foreach ($this->_modules as $url => $mod)
+            foreach (self::getModules() as $url => $mod)
             {
                 if (!isset($mod['menuItem'])
                 || ($userAuthLevel === null && ($mod['registeredOnly'] || $mod['adminOnly']))
@@ -255,8 +245,65 @@
          * @param string $name
          * @param mixed &$var
          */
-        protected function _templateVar($name, &$var)
+        protected function templateVar($name, &$var)
         {
             $this->_tplVars[$name] = &$var;
+        }
+
+        /**
+         * Calls an action with accompanying template or not
+         * @param $actionName
+         * @param array $args
+         * @param bool $withTemplate
+         * @throws \Exception
+         * @return void
+         */
+        protected function callAction($actionName, array $args = array(), $withTemplate = true)
+        {
+            if (method_exists($this, $actionName))
+            {
+                call_user_func_array(array($this, $actionName), $args);
+                if ($withTemplate)
+                {
+                    $tplName = __DIR__."/../../_tpl/{$this->_fileName}/{$actionName}.phtml";
+                    if (!in_array($tplName, $this->_includedTemplates, true) && file_exists($tplName))
+                        $this->_includedTemplates[] = $tplName;
+                }
+            }
+            else
+                throw new \Exception('Called action does not exist!');
+        }
+
+        /**
+         * Modules array
+         * @return array|null
+         */
+        public static function &getModules()
+        {
+            if (self::$_modules !== null)
+                return self::$_modules;
+
+            self::$_modules = array();
+            $controllersFolder = dir(__DIR__.'/../../_ctl');
+            if ($controllersFolder)
+            {
+                while (false !== ($modFile = $controllersFolder->read()))
+                {
+                    if ($modFile == '.' || $modFile == '..') continue;
+                    require_once __DIR__."/../../_ctl/{$modFile}"; // include to get class constants
+                    $data = array();
+                    $tmp       = explode('.', $modFile);
+                    $fileNoExt = $tmp[0];
+                    $data['fileName'] = $fileNoExt;
+                    $className = '\MuPHP\MVC\\' . ucfirst($fileNoExt);
+                    $data['registeredOnly'] = constant($className .'::AUTH_REGISTERED');
+                    $data['adminOnly'] = constant($className .'::AUTH_ADMIN');
+                    if (($m = $className::${'MENU_ITEM'}) !== null)
+                        $data['menuItem'] = $m;
+                    self::$_modules[$fileNoExt] = $data;
+                }
+            }
+
+            return self::$_modules;
         }
     }
