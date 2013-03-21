@@ -83,12 +83,11 @@
     setlocale(LC_TIME, $currentLocale.'.UTF8'); // Locale definition for time expression
 
     // Redis automatically cached queries keys prefix
+    // Redis automatically cached queries keys prefix
     define('CACHE_DEFAULT_ENGINE', \MuPHP\Cache\CacheProvider::CACHE_REDIS);
-    if (CACHE_DEFAULT_ENGINE === \MuPHP\Cache\CacheProvider::CACHE_REDIS)
-    {
-        ini_set('session.save_handler', 'redis');
-        ini_set('session.save_path', 'tcp://localhost:6379/');
-    }
+    define('CACHE_SESSIONS', true);
+    if (CACHE_SESSIONS)
+        \MuPHP\Cache\CacheProvider::EnableSessionCaching(CACHE_DEFAULT_ENGINE);
     define('CACHE_SQLCACHE_PREFIX', CACHE_KEYPREFIX.':dbcache:');
 
     // Website constants

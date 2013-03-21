@@ -50,9 +50,8 @@
      * @subpackage Cache
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2013, Mathieu AMIOT
-     * @version    1.1
+     * @version    1.0
      * @changelog
-     *      1.1 : Added increment and decrement methods to cache provider
      *      1.0 : Initial release
      */
     class CacheProvider extends \MuPHP\DesignPatterns\Singleton
@@ -124,6 +123,7 @@
             {
                 if (!class_exists('\\Redis'))
                     throw new RedisNotFoundException();
+
                 $this->_currentProvider = self::CACHE_REDIS;
                 $this->_provider = new \Redis();
                 $this->_provider->connect(CACHE_HOST, CACHE_PORT);
@@ -159,7 +159,7 @@
             if ($this->_currentProvider === self::CACHE_REDIS)
                 return $timeout ? $this->_provider->setex($cacheKey, (int)$timeout, $cacheValue) : $this->_provider->set($cacheKey, $cacheValue);
             else if ($this->_currentProvider === self::CACHE_MEMCACHE)
-                return $this->_provider->set($cacheKey, $cacheValue, $timeout);
+                return $this->_provider->set($cacheKey, $cacheValue, 0, $timeout);
 
             return false;
         }
@@ -258,7 +258,7 @@
 
             return $result;
         }
-        
+
         /**
          * Increment provided key by value
          * @param     $key
@@ -313,4 +313,26 @@
             return strpos($key, CACHE_KEYPREFIX) === false ? CACHE_KEYPREFIX . ':' . $key : $key;
         }
 
+        /**
+         * @param int $provider
+         */
+        public static function EnableSessionCaching($provider)
+        {
+            switch ($provider)
+            {
+                case self::CACHE_REDIS:
+                    ini_set('session.save_handler', 'redis');
+                    ini_set('session.save_path', 'tcp://'.CACHE_HOST.':'.CACHE_PORT.'/');
+                    break;
+                case self::CACHE_MEMCACHE:
+                    ini_set('session.save_handler', 'memcache');
+                    ini_set('session.save_path', 'tcp://'.CACHE_HOST.':'.CACHE_PORT.'/');
+                    break;
+                case self::CACHE_NONE:
+                default:
+                    ini_set('session.save_handler', 'files');
+                    ini_set('session.save_path', '/tmp/php/sessions');
+
+            }
+        }
     }
