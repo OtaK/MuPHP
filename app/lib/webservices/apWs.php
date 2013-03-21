@@ -31,6 +31,7 @@
      *      0.1a : in progress
      */
     namespace MuPHP\WebserviceServer;
+    require_once __DIR__.'/../../cfg/define.php';
 
     class apWsWebserviceNotFoundException extends \Exception
     {
@@ -89,7 +90,7 @@
         {
             if (file_exists(($fileName = __DIR__.'/../../_api/'.$name.'.php'))) include_once $fileName;
             else throw new apWsWebserviceNotFoundException();
-            $className = '\MuPHP\WebserviceServer\apWs\\'.$name;
+            $className = '\MuPHP\WebserviceServer\Endpoint\\'.$name;
             if (class_exists($className)) return new $className();
             else throw new apWsWebserviceNotFoundException();
         }
@@ -124,7 +125,7 @@
         protected function _checkInputData()
         {
             $res = &$this->_getInputData();
-            return $res !== null && isset($res);
+            return isset($res) && $res !== null;
         }
 
         /**
@@ -137,15 +138,20 @@
                 case self::APWS_GET:
                 case self::APWS_HEAD:
                     return $_GET;
+                    break;
 
-                case self::APWS_POST: return $_POST;
+                case self::APWS_POST:
+                    return $_POST;
+                    break;
 
                 case self::APWS_DELETE:
                 case self::APWS_PUT:
                     parse_str(file_get_contents('php://input'), $put);
                     return $put;
+                    break;
 
-                default: return null;
+                default:
+                    return null;
             }
         }
 

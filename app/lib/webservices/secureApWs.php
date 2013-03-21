@@ -22,8 +22,9 @@
      * @subpackage Webservice Server
      * @author Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright Copyright (c) 2013, Mathieu AMIOT
-     * @version 0.1dev
+     * @version 0.7
      * @changelog
+     *      0.7 : Stable build, though no nonce and private/public key pair support
      *      0.1dev : in progress
      */
 
