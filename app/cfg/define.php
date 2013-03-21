@@ -18,8 +18,8 @@
      */
 
     // Base includes
-    include_once __DIR__ . '/modules.php';
     include_once __DIR__ . '/locales.php';
+        define('AUTOLOAD', false);
     if (!defined('AUTOLOAD') || AUTOLOAD)
     {
         include_once __DIR__ . '/autoloader.php';
@@ -27,7 +27,9 @@
     }
     else
     {
+        include_once __DIR__ . '/../lib/utils/benchmarker.php';
         include_once __DIR__ . '/../lib/users/userMan.php';
+        include_once __DIR__ . '/../lib/users/rightsMan.php';
         include_once __DIR__ . '/../lib/i18n/localeLoader.php';
         include_once __DIR__ . '/../lib/utils/utils.php';
         include_once __DIR__ . '/../lib/mvc/Module.php';
