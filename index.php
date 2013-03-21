@@ -1,7 +1,7 @@
 <?php
 
     /*
-     * Copyright 2013 Mathieu "OtaK_" Amiot <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
+     * Copyright 2012 Mathieu "OtaK_" Amiot <m.amiot@otak-arts.com> http://mathieu-amiot.fr/
      *
      * Licensed under the Apache License, Version 2.0 (the "License");
      * you may not use this file except in compliance with the License.
@@ -31,30 +31,24 @@
 
     if (DEBUG)
     {
+        require_once __DIR__.'/app/lib/utils/benchmarker.php';
         $siteBenchmark = new \MuPHP\Performance\benchmarker();
         $siteBenchmark->start();
     }
 
-    $modules = getModules();
+    $modules = &\MuPHP\MVC\Module::getModules();
     $acl = new \MuPHP\Auth\rightsMan($modules); // rights management object
     @session_start();
     $currentLocale = \MuPHP\Accounts\userMan::loggedIn() ? \MuPHP\Accounts\userMan::currentUser()->getUserLocale() : DEFAULT_LOCALE;
 
-    $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
+    $pageName = (!isset($_GET['module']) ? 'dashboard' : addslashes($_GET['module'])); // null check & default page
     $i18n = new \MuPHP\Locales\localeLoader($currentLocale);
     $locales = getLocales();
 
     if ($acl->isAuthorized($pageName))
     {
         $module = \MuPHP\MVC\Module::factory($pageName);
-        $module->setModulesArray($modules);
         $module->setIntlEngine($i18n);
-
-        if (isset($modules[$pageName]['headCanvas']))
-            $module->setHeadCanvas($modules[$pageName]['headCanvas']);
-        if (isset($modules[$pageName]['footCanvas']))
-            $module->setFootCanvas($modules[$pageName]['footCanvas']);
-
         $module->run();
     }
     else // error if hacker detected
@@ -64,5 +58,5 @@
     {
         /** @var $siteBenchmark \MuPHP\Performance\benchmarker */
         $siteBenchmark->end();
-        echo '<script type="text/javascript">$(\'#benchmark\').html(\''.$siteBenchmark->output('Generation', false).'\')</script>';
+        echo '<script type="text/javascript">document.getElementById(\'benchmark\').innerHTML = \''.$siteBenchmark->output('Generation', false).'\';</script>';
     }
