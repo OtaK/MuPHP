@@ -17,6 +17,15 @@
      *
      */
 
+    if (PHP_SAPI === 'cli') // if called from CLI, serve as a generator console
+    {
+        if (!isset($argv))
+            $argv = &$_SERVER['argv'];
+        require_once __DIR__.'/app/lib/cli/Console.php';
+        \MuPHP\CLI\Console::boot($argv);
+        die('Bye!');
+    }
+
     // Calling all Controllers and Views to build the website
     include_once 'app/cfg/define.php'; // calling cfg file
 
