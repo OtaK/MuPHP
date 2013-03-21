@@ -41,7 +41,7 @@
     @session_start();
     $currentLocale = \MuPHP\Accounts\userMan::loggedIn() ? \MuPHP\Accounts\userMan::currentUser()->getUserLocale() : DEFAULT_LOCALE;
 
-    $pageName = (!isset($_GET['module']) ? 'dashboard' : addslashes($_GET['module'])); // null check & default page
+    $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
     $i18n = new \MuPHP\Locales\localeLoader($currentLocale);
     $locales = getLocales();
 
