@@ -34,8 +34,8 @@
         {
             $appPath         = __DIR__ . '/../../';
             $ctlContents     = file_get_contents(__DIR__ . '/ctl.inc');
-            $detailsContents = file_get_contents(__DIR__ . '/tpl_index.inc');
-            $indexContents   = file_get_contents(__DIR__ . '/tpl_details.inc');
+            $detailsContents = file_get_contents(__DIR__ . '/tpl_details.inc');
+            $indexContents   = file_get_contents(__DIR__ . '/tpl_index.inc');
 
             // Make templates directory
             mkdir($appPath . '/_tpl/' . $moduleName);
