@@ -56,6 +56,7 @@
      */
     class CacheProvider extends \MuPHP\DesignPatterns\Singleton
     {
+        private static $_sessionsHandled = false;
         const
                 CACHE_NONE = 0x0,
                 CACHE_MEMCACHE = 0x1,
@@ -127,6 +128,8 @@
                 $this->_currentProvider = self::CACHE_REDIS;
                 $this->_provider = new \Redis();
                 $this->_provider->connect(CACHE_HOST, CACHE_PORT);
+                if (CACHE_PASSWORD !== false)
+                    $this->_provider->auth(CACHE_PASSWORD);
                 // JSON serialization is better for cross platform stuff
                 $this->_provider->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
             }
@@ -323,16 +326,30 @@
                 case self::CACHE_REDIS:
                     ini_set('session.save_handler', 'redis');
                     ini_set('session.save_path', 'tcp://'.CACHE_HOST.':'.CACHE_PORT.'/');
+                    self::$_sessionsHandled = true;
                     break;
                 case self::CACHE_MEMCACHE:
                     ini_set('session.save_handler', 'memcache');
                     ini_set('session.save_path', 'tcp://'.CACHE_HOST.':'.CACHE_PORT.'/');
+                    self::$_sessionsHandled = true;
                     break;
                 case self::CACHE_NONE:
                 default:
                     ini_set('session.save_handler', 'files');
-                    ini_set('session.save_path', '/tmp/php/sessions');
+                    ini_set('session.save_path', '');
+                    self::$_sessionsHandled = false;
 
+            }
+        }
+
+        /**
+         * @param $key
+         */
+        public static function SetSessionKey($key)
+        {
+            if (self::$_sessionsHandled)
+            {
+                ini_set('session.name', $key);
             }
         }
     }
