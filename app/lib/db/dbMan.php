@@ -213,19 +213,20 @@
             $callback = function($matches) use (&$paramIndex, &$params, &$helper)
             {
                 // if vd or vs, replace dat shit
-                if (stripos($matches[0], '%v') !== false && is_array($params[$paramIndex]))
+                $result = $matches[0];
+                if (stripos($result, '%v') !== false && is_array($params[$paramIndex]))
                 {
                     $data = $params[$paramIndex];
                     foreach ($data as &$d)
                         $d = $helper->real_escape_string($d);
 
-                    unset($params[$paramIndex++]);
-                    return "'" . implode("','", $data) . "'";
+                    unset($params[$paramIndex]);
+                    $result = "'" . implode("','", $data) . "'";
                 }
 
                 // If other placeholder, do nothing
                 ++$paramIndex;
-                return $matches[0];
+                return $result;
             };
 
             $params = array_values($params);
