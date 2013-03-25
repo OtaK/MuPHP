@@ -22,8 +22,9 @@
      * @subpackage DB
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2013, Mathieu AMIOT
-     * @version    1.6
+     * @version    1.7
      * @changelog
+     *      1.7 : Added composite arguments (%v) to query for array arguments. (nice for IN() queries)
      *      1.6 : Added cached query support
      *      1.5.1 : Added db name property
      *      1.5 : Added iteration modes and XSS protection mode to dbResult
@@ -192,41 +193,43 @@
             if (!count($params))
                 return $query;
 
-	        /*if (strpos($query, '%vs') !== false || strpos($query, '%vd') !== false)
-                $this->filterCompositeArgs($query, $params);*/
+	        if (stripos($query, '%v') !== false)
+                $this->filterCompositeArgs($query, $params, $this);
+
             array_walk($params, '\MuPHP\DB\dbMan::escapeCallback', $this);
             return vsprintf($query, $params);
         }
 
         /**
-         * Filters params array to remove the %vs / %vd params
-         * @callback
-         * @static
-         * @param $param
-         * @return bool
-         */
-        private static function filterParam($param)
-        {
-            return is_array($param);
-        }
-
-        /**
          * @static
          * @param string $query
-         * @param array $params
+         * @param array  $params
+         * @param dbMan  $helper
+         * @return void
          */
-        private static function filterCompositeArgs(&$query, array $params = array())
+        private static function filterCompositeArgs(&$query, array &$params = array(), dbMan &$helper)
         {
-            // TODO filter each %{xx} and dequeue matching $params from the array then parse query
-            $placeholders = array();
-            // TODO : Count placeholders ($/%[b|c|d|e|E|u|f|F|g|G|o|s|x|X|vs|vd]/^)
-            // TODO : associate each placeholder with $params arg with array($param => offset) in string $query
-            // TODO : filter each custom placeholder (%vs %vd) with the replacement from $params
-            // TODO : unset each matching $params members
+            $paramIndex = 0;
+            $callback = function($matches) use (&$paramIndex, &$params, &$helper)
+            {
+                // if vd or vs, replace dat shit
+                if (stripos($matches[0], '%v') !== false && is_array($params[$paramIndex]))
+                {
+                    $data = $params[$paramIndex];
+                    foreach ($data as &$d)
+                        $d = $helper->real_escape_string($d);
 
+                    unset($params[$paramIndex++]);
+                    return "'" . implode("','", $data) . "'";
+                }
 
-            $regex = '/%v[s|d]/';
-            preg_replace_callback($regex, 'dbMan::filterParam', $query);
+                // If other placeholder, do nothing
+                ++$paramIndex;
+                return $matches[0];
+            };
+
+            $params = array_values($params);
+            $query = preg_replace_callback('/%[b|c|d|e|E|u|f|F|g|G|o|s|x|X|v|V]/', $callback, $query);
         }
 
         /**
