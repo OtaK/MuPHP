@@ -14,6 +14,10 @@
         'currentLocale' => CURRENT_LOCALE,
         'baseUrl' => BASE_URL,
         'locale' => $i18n->buildPageArray(),
+        'FB' => array(
+            'appId' => FB_APP_ID,
+            'appPermissions' => FB_APP_SCOPES
+        )
     );
 
     die(json_encode($config, JSON_FORCE_OBJECT));
