@@ -56,4 +56,8 @@
                 }
             }
         }
+        
+        public static function base64UrlDecode($input) {
+            return base64_decode(strtr($input, '-_', '+/'));
+        }
     }
