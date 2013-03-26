@@ -104,6 +104,11 @@
     // Utilities
     define('REGEXP_EMAIL', '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i'); // Regexp used for email validation
 
+    // Facebook App
+    define('FB_APP_ID', null);
+    define('FB_APP_SECRET', null);
+    define('FB_APP_SCOPES', null);
+
     if (DEBUG)
     {
         ini_set('display_errors', 1);
