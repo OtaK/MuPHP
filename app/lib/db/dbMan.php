@@ -193,8 +193,8 @@
             if (!count($params))
                 return $query;
 
-	        if (stripos($query, '%v') !== false)
-                $this->filterCompositeArgs($query, $params, $this);
+	    if (stripos($query, '%v') !== false)
+                self::_filterCompositeArgs($query, $params, $this);
 
             array_walk($params, '\MuPHP\DB\dbMan::escapeCallback', $this);
             return vsprintf($query, $params);
@@ -207,7 +207,7 @@
          * @param dbMan  $helper
          * @return void
          */
-        private static function filterCompositeArgs(&$query, array &$params = array(), dbMan &$helper)
+        private static function _filterCompositeArgs(&$query, array &$params = array(), dbMan &$helper)
         {
             $paramIndex = 0;
             $callback = function($matches) use (&$paramIndex, &$params, &$helper)
