@@ -124,7 +124,7 @@
             $text = $this->textUnit;
             $res = sprintf("%.{$this->digits}f", $elapsedTime);
 
-            $this->totalTime += $res;
+            $this->totalTime += $elapsedTime;
             return self::out("{$label} : {$res} {$text} used", $echo);
         }
 
