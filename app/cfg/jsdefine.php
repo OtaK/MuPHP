@@ -5,8 +5,8 @@
 
     define('AUTOLOAD', false);
     include_once 'define.php';
-    $i18n = new \MuPHP\Locales\localeLoader($shortLocale);
-    $i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_DIALOGS);
+    $i18n = new \MuPHP\I18n\LocaleLoader($shortLocale);
+    $i18n->selectSection(\MuPHP\I18n\LocaleLoader::LOCALE_DIALOGS);
 
     $config = array(
         'DEBUG' => DEBUG,

@@ -26,8 +26,9 @@
      * @changelog
      *      0.1dev : In dev
      */
-    namespace MuPHP\ActiveRecord;
-    require_once __DIR__.'/dbMan.php';
+
+    namespace MuPHP\DB;
+    require_once __DIR__ . '/DBMan.php';
 
     class TaktiveRecordSchema
     {
@@ -37,7 +38,7 @@
 
         public function __construct()
         {
-            $this->_db = \MuPHP\DB\dbMan::get_instance();
+            $this->_db = \MuPHP\DB\DBMan::get_instance();
             $this->_db->autocommit(false);
             $this->buildSchema();
         }
@@ -110,7 +111,7 @@
             $this->_keyType         = $keyType;
         }
 
-        public function save() { \MuPHP\DB\dbMan::get_instance()->commit(); $this->_saveCurrentState(); }
+        public function save() { \MuPHP\DB\DBMan::get_instance()->commit(); $this->_saveCurrentState(); }
 
         private function _saveCurrentState()
         {
@@ -139,7 +140,7 @@
                 $prevName = $this->_previousState->fieldName;
 
             $var = $value;
-            \MuPHP\DB\dbMan::get_instance()->query("
+            \MuPHP\DB\DBMan::get_instance()->query("
                 ALTER TABLE %s
                 CHANGE %s %s %s %s %s",
                 array(

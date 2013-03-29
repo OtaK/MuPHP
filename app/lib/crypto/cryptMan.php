@@ -29,7 +29,7 @@
 	 *      1.1 : moved configuration constants to class constants instead of project-wide defines
 	 *      1.0 : initial release
 	 */
-    namespace MuPHP\Crypt;
+    namespace MuPHP\Crypto;
 
     class MCryptNotInstalledException extends \Exception
     {
@@ -60,7 +60,7 @@
 	 * The main purpose is to have separate private keys for different parts of the website in use, allowing almost
 	 * unbreakable security (except bruteforcing, but even if the live data gets cracked, the db is still secure).
 	 */
-	class cryptMan
+	class CryptMan
 	{
 		// Class configuration consts
 		const CRYPTMAN_MODE_DB = 1; // Mode when using encrypted data from DB
@@ -180,5 +180,5 @@
         }
 	}
 
-    if (strpos($_SERVER['REQUEST_URI'], 'cryptMan.php') !== false)
-        die(cryptMan::generateIV());
+    if (strpos($_SERVER['REQUEST_URI'], 'CryptMan.php') !== false)
+        die(CryptMan::generateIV());

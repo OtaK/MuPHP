@@ -28,7 +28,7 @@
      *      1.1 : Added Observer/Observable patterns
      *      1.0 : initial release
 	 */
-    namespace MuPHP\DesignPatterns;
+    namespace MuPHP\Abstraction;
 
 
     /**

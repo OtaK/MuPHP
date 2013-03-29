@@ -27,14 +27,14 @@
      *      1.1 : Introduction of namespace use
 	 *      1.0 : initial release
 	 */
-    namespace MuPHP\Auth;
+    namespace MuPHP\Users;
 
     /**
      * @package    MuPHP
      * @subpackage Auth
      *             Manages the rights of users across pages of the website specified in the $modules arg of the ctor
      */
-    class rightsMan
+    class RightsMan
     {
         static private
             $_siteModules;
@@ -69,10 +69,10 @@
 
             if (self::$_siteModules[$pageName]['registeredOnly'])
             {
-                if (\MuPHP\Accounts\userMan::loggedIn())
+                if (\MuPHP\Users\UserMan::loggedIn())
                 {
                     if (self::$_siteModules[$pageName]['adminOnly'])
-                        return (\MuPHP\Accounts\userMan::currentUser()->isAdmin());
+                        return (\MuPHP\Users\UserMan::currentUser()->isAdmin());
 
                     return true;
                 }

@@ -32,17 +32,17 @@
     if (DEBUG)
     {
         require_once __DIR__.'/app/lib/utils/benchmarker.php';
-        $siteBenchmark = new \MuPHP\Performance\benchmarker();
+        $siteBenchmark = new \MuPHP\Performance\MuBenchmarker();
         $siteBenchmark->start();
     }
 
     $modules = &\MuPHP\MVC\Module::getModules();
-    $acl = new \MuPHP\Auth\rightsMan($modules); // rights management object
+    $acl = new \MuPHP\Users\RightsMan($modules); // rights management object
     @session_start();
-    $currentLocale = \MuPHP\Accounts\userMan::loggedIn() ? \MuPHP\Accounts\userMan::currentUser()->getUserLocale() : DEFAULT_LOCALE;
+    $currentLocale = \MuPHP\Users\UserMan::loggedIn() ? \MuPHP\Users\UserMan::currentUser()->getUserLocale() : DEFAULT_LOCALE;
 
     $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
-    $i18n = new \MuPHP\Locales\localeLoader($currentLocale);
+    $i18n = new \MuPHP\I18n\LocaleLoader($currentLocale);
     $locales = getLocales();
 
     if ($acl->isAuthorized($pageName))
@@ -56,7 +56,7 @@
 
     if (DEBUG)
     {
-        /** @var $siteBenchmark \MuPHP\Performance\benchmarker */
+        /** @var $siteBenchmark \MuPHP\Performance\MuBenchmarker */
         $siteBenchmark->end();
         echo '<script type="text/javascript">document.getElementById(\'benchmark\').innerHTML = \''.$siteBenchmark->output('Generation', false).'\';</script>';
     }

@@ -36,7 +36,7 @@
         }
     }
 
-    class TakDebugger
+    class MuDebugger
     {
         const
             TYPE_BOOLEAN = 1,

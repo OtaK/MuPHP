@@ -1,14 +1,14 @@
 <?php
 
     namespace MuPHP\MVC;
-    include_once __DIR__.'/../abstraction/designPatterns.php';
-    require_once __DIR__.'/../users/userMan.php';
-    require_once __DIR__.'/../db/dbMan.php';
+    include_once __DIR__ . '/../abstraction/DesignPatterns.php';
+    require_once __DIR__ . '/../users/UserMan.php';
+    require_once __DIR__ . '/../db/DBMan.php';
 
     /**
      *
      */
-    abstract class Module implements \MuPHP\DesignPatterns\Factory
+    abstract class Module implements \MuPHP\Abstraction\Factory
     {
         const
             FOOT_CANVAS = 'foot',
@@ -55,9 +55,9 @@
         }
 
         /**
-         * @param \MuPHP\Locales\localeLoader $i18n
+         * @param \MuPHP\I18n\LocaleLoader $i18n
          */
-        public function setIntlEngine(\MuPHP\Locales\localeLoader &$i18n)
+        public function setIntlEngine(\MuPHP\I18n\LocaleLoader &$i18n)
         {
             $this->_i18n = &$i18n;
         }
@@ -90,7 +90,7 @@
          */
         protected function _render()
         {
-            $this->_i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_CONTENT);
+            $this->_i18n->selectSection(\MuPHP\I18n\LocaleLoader::LOCALE_CONTENT);
             $this->_i18n->getPageNode($this->_fileName);
             $headFile = __DIR__.'/../../_tpl/_canvas/' . self::HEAD_CANVAS . '.phtml';
             if (file_exists($headFile))
@@ -111,7 +111,7 @@
             else
                 throw new \Exception('No template file found! path='.$tplFile);
 
-            $this->_i18n->selectSection(\MuPHP\Locales\localeLoader::LOCALE_FOOTER);
+            $this->_i18n->selectSection(\MuPHP\I18n\LocaleLoader::LOCALE_FOOTER);
             $footFile = __DIR__.'/../../_tpl/_canvas/' . self::FOOT_CANVAS . '.phtml';
             if (file_exists($footFile))
                 include $footFile;
@@ -135,7 +135,7 @@
             $classNS = explode('\\', strtolower(get_called_class()));
             $curModule = $classNS[count($classNS) - 1];
 
-            $userAuthLevel = \MuPHP\Accounts\userMan::loggedIn() ? \MuPHP\Accounts\userMan::currentUser()->getAuthLevel() : null;
+            $userAuthLevel = \MuPHP\Users\UserMan::loggedIn() ? \MuPHP\Users\UserMan::currentUser()->getAuthLevel() : null;
 
             foreach (self::getModules() as $url => $mod)
             {

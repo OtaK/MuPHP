@@ -1,5 +1,5 @@
 <?php
-    require_once __DIR__ . '/app/lib/webservices/apWs.php';
+    require_once __DIR__ . '/app/lib/webserviceserver/APWS.php';
 
     $result = array('error' => false);
 
@@ -10,14 +10,14 @@
         die(json_encode($result));
     }
 
-    try { $wsObj = \MuPHP\WebserviceServer\apWs::factory($_GET['ws']); }
-    catch (\MuPHP\WebserviceServer\apWsWebserviceNotFoundException $e)
+    try { $wsObj = \MuPHP\WebserviceServer\APWS::factory($_GET['ws']); }
+    catch (\MuPHP\WebserviceServer\APWSWebserviceNotFoundException $e)
     {
-        \MuPHP\WebserviceServer\apWs::quit($e); exit;
+        \MuPHP\WebserviceServer\APWS::quit($e); exit;
     }
 
     try { $wsObj->run(); }
-    catch (\MuPHP\WebserviceServer\apWsBadModeSupplied $e)
+    catch (\MuPHP\WebserviceServer\APWSBadModeSupplied $e)
     {
-        \MuPHP\WebserviceServer\apWs::quit($e); exit;
+        \MuPHP\WebserviceServer\APWS::quit($e); exit;
     }

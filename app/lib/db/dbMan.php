@@ -28,7 +28,7 @@
      *      1.6 : Added cached query support
      *      1.5.1 : Added db name property
      *      1.5 : Added iteration modes and XSS protection mode to dbResult
-     *      1.4.1 : Added design pattern usage hint to dbMan
+     *      1.4.1 : Added design pattern usage hint to DBMan
      *      1.4 : Added Iterator support to dbResult, so it can be browsed with a foreach loop
      *      1.3 : Multiple connection support
      *      1.2 : Introduction of namespace use
@@ -37,16 +37,16 @@
      *      0.9b : initial release
      */
     namespace MuPHP\DB;
-    require_once __DIR__ . '/../abstraction/designPatterns.php';
+    require_once __DIR__ . '/../abstraction/DesignPatterns.php';
     require_once __DIR__ . '/../cache/CacheProvider.php';
 
     /**
-     * dbMan is an overlay (and a singleton) to MySQLi and allows queries to be automatically escaped against SQL injections
+     * DBMan is an overlay (and a singleton) to MySQLi and allows queries to be automatically escaped against SQL injections
      * It depends on the dbResult class further below in this subpackage
      */
-    class dbMan extends \mysqli implements \MuPHP\DesignPatterns\iSingleton
+    class DBMan extends \mysqli implements \MuPHP\Abstraction\iSingleton
     {
-        /** @var dbMan $_instance           Singleton instance */
+        /** @var DBMan $_instance           Singleton instance */
         private static $_instance;
         /** @var array $_connectionInfo     Saved connection info for connection updates */
         private static $_connectionInfo;
@@ -76,15 +76,15 @@
          * @param string $pass
          * @param string $dbName
          * @param bool   $isNewInstance
-         * @return dbMan
+         * @return DBMan
          */
         static public function get_instance($host = DBHOST, $user = DBUSER, $pass = DBPWD, $dbName = DBBASE, $isNewInstance = false)
         {
             if ($isNewInstance)
-                return new dbMan($host, $user, $pass, $dbName);
+                return new DBMan($host, $user, $pass, $dbName);
 
             if (!isset(self::$_instance))
-                self::$_instance = new dbMan($host, $user, $pass, $dbName);
+                self::$_instance = new DBMan($host, $user, $pass, $dbName);
 
             self::$_instance->renewConnection($host, $user, $pass, $dbName);
             return self::$_instance;
@@ -131,7 +131,7 @@
         /**
          * Overloaded select_db function to throw exceptions and also to support chained object calls
          * @param $dbname
-         * @return dbMan
+         * @return DBMan
          * @throws \Exception
          */
         public function select_db($dbname)
@@ -204,10 +204,10 @@
          * @static
          * @param string $query
          * @param array  $params
-         * @param dbMan  $helper
+         * @param DBMan  $helper
          * @return void
          */
-        private static function _filterCompositeArgs(&$query, array &$params = array(), dbMan &$helper)
+        private static function _filterCompositeArgs(&$query, array &$params = array(), DBMan &$helper)
         {
             $paramIndex = 0;
             $callback = function($matches) use (&$paramIndex, &$params, &$helper)
@@ -239,10 +239,10 @@
          * @static
          * @param mixed $value
          * @param mixed $key    useless, just for the callback params
-         * @param dbMan $helper self used for the escape string call
+         * @param DBMan $helper self used for the escape string call
          * @return void
          */
-        private static function escapeCallback(&$value, $key, dbMan $helper)
+        private static function escapeCallback(&$value, $key, DBMan $helper)
         {
             $value = $helper->real_escape_string($value);
         }
@@ -297,7 +297,7 @@
      * @package    MuPHP
      * @subpackage DB
      *             dbResult is an overlay to MySQLi_Result
-     *             It allows to escape results produced by dbMan::query() against XSS attacks
+     *             It allows to escape results produced by DBMan::query() against XSS attacks
      * @see        dbMan::query()
      *
      * Properties:

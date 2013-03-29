@@ -18,7 +18,7 @@
      */
 
     namespace MuPHP\Cache;
-    require_once __DIR__ . '/../abstraction/designPatterns.php';
+    require_once __DIR__ . '/../abstraction/DesignPatterns.php';
 
     class MemcacheNotFoundException extends \Exception
     {
@@ -54,7 +54,7 @@
      * @changelog
      *      1.0 : Initial release
      */
-    class CacheProvider extends \MuPHP\DesignPatterns\Singleton
+    class CacheProvider extends \MuPHP\Abstraction\Singleton
     {
         private static $_sessionsHandled = false;
         const

@@ -27,8 +27,8 @@
      *      1.1 : Several bugfixes
      *      1.0 : initial release
      */
-    namespace MuPHP\Accounts;
-    require_once __DIR__ . '/userMan.php';
+    namespace MuPHP\Users;
+    require_once __DIR__ . '/UserMan.php';
 
     class fbUserManNotConfiguredException extends \Exception
     {
@@ -39,7 +39,7 @@
     }
 
 
-    class fbUserMan extends userMan
+    class FBUserMan extends UserMan
     {
         const FB_APPID = ''; // TODO : configure this each time
         protected
@@ -70,7 +70,7 @@
             // Insert / Update FB User data into DB associated user account
             $internalData = $this->isRegistered();
             if (!$this->registerOrUpdate($fbData, $internalData))
-                throw new \Exception(\MuPHP\DB\dbMan::get_instance()->error);
+                throw new \Exception(\MuPHP\DB\DBMan::get_instance()->error);
 
             // Call to parent userMan methods
             parent::__construct($internalData['user_id'], $internalData['user_email'], $internalData['user_pass'], $internalData['user_status']);
@@ -94,7 +94,7 @@
          */
         protected function isRegistered()
         {
-            $res = \MuPHP\DB\dbMan::get_instance()->singleResQuery("
+            $res = \MuPHP\DB\DBMan::get_instance()->singleResQuery("
                 SELECT *
                 FROM users
                 WHERE user_fb_id = %d",
@@ -125,7 +125,7 @@
             $userCity = explode(',', $fbData['user']['location']['name']);
             $userCity = $userCity[0];
 
-            $res = \MuPHP\DB\dbMan::get_instance()->query('
+            $res = \MuPHP\DB\DBMan::get_instance()->query('
                 INSERT INTO users
                 SET
                     user_email = \'%1$s\',
@@ -162,7 +162,7 @@
             ));
 
             if ($register)
-                $internalData['user_id'] = \MuPHP\DB\dbMan::get_instance()->insert_id;
+                $internalData['user_id'] = \MuPHP\DB\DBMan::get_instance()->insert_id;
 
             return $res;
         }

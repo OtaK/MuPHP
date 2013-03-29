@@ -33,22 +33,22 @@
     namespace MuPHP\WebserviceServer;
     require_once __DIR__.'/../../cfg/define.php';
 
-    class apWsWebserviceNotFoundException extends \Exception
+    class APWSWebserviceNotFoundException extends \Exception
     {
         public function __construct() { $this->message = "Supplied webservice doesn't exist !"; }
     }
 
-    class apWsAjaxViolationAccess extends \Exception
+    class APWSAjaxViolationAccess extends \Exception
     {
         public function __construct() { $this->message = "AJAX Violation Access"; }
     }
 
-    class apWsActionMethodNotFound extends \Exception
+    class APWSActionMethodNotFound extends \Exception
     {
         public function __construct() { $this->message = "The requested action has not been implemented!"; }
     }
 
-    class apWsBadModeSupplied extends \Exception
+    class APWSBadModeSupplied extends \Exception
     {
         public function __construct() { $this->message = "The supplied mode doesn't exist!"; }
     }
@@ -56,10 +56,10 @@
     /**
      * @package MuPHP
      * @subpackage Webservice Server
-     * apWs (All Purpose Webservice) is a modular class intended to manage all the possible needs
+     * APWS (All Purpose Webservice) is a modular class intended to manage all the possible needs
      * in webservice-driven applications such as iOS/Android apps, and coregistration services
      */
-    abstract class apWs
+    abstract class APWS
     {
         protected
             $_inputData = array(),
@@ -83,16 +83,16 @@
         /**
          * @static
          * @param string $name Classname to be instanciated
-         * @return apWs
-         * @throws apWsWebserviceNotFoundException
+         * @return APWS
+         * @throws APWSWebserviceNotFoundException
          */
         static public function factory($name)
         {
             if (file_exists(($fileName = __DIR__.'/../../_api/'.$name.'.php'))) include_once $fileName;
-            else throw new apWsWebserviceNotFoundException();
+            else throw new APWSWebserviceNotFoundException();
             $className = '\MuPHP\WebserviceServer\Endpoint\\'.$name;
             if (class_exists($className)) return new $className();
-            else throw new apWsWebserviceNotFoundException();
+            else throw new APWSWebserviceNotFoundException();
         }
 
         /**
@@ -114,7 +114,7 @@
             if (!$this->_checkInputData()) return false;
             if ($this->_isAJAX
                 && (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest'))
-                self::quit(new apWsAjaxViolationAccess());
+                self::quit(new APWSAjaxViolationAccess());
             $this->_inputData = &$this->_getInputData();
             return true;
         }
@@ -180,13 +180,13 @@
         /**
          * @param bool $echo
          * @return string
-         * @throws apWsBadModeSupplied
+         * @throws APWSBadModeSupplied
          */
         public function run($echo = true)
         {
             header('Content-Type: application/json');
             if (!$this->gatherInputData())
-                throw new apWsBadModeSupplied();
+                throw new APWSBadModeSupplied();
             $this->process();
             return $this->outputResult($echo);
         }
@@ -201,9 +201,9 @@
          * Quits the current webservice script with a JSON error
          * @static
          * @param \Exception $e
-         * @param apWs       $context
+         * @param APWS       $context
          */
-        static public function quit(\Exception $e, apWs &$context = null)
+        static public function quit(\Exception $e, APWS &$context = null)
         {
             $dieData = array(
                 'error' => true,
@@ -215,4 +215,4 @@
         }
     }
 
-    include_once __DIR__.'/secureApWs.php';
+    include_once __DIR__ . '/SecureAPWS.php';

@@ -19,7 +19,9 @@
 
     // Base includes
     include_once __DIR__ . '/locales.php';
-        define('AUTOLOAD', false);
+    //include_once __DIR__ . '/autoloader.php';
+    //spl_autoload_register('MuPHP_spl_autoloader');
+    define('AUTOLOAD', false);
     if (!defined('AUTOLOAD') || AUTOLOAD)
     {
         include_once __DIR__ . '/autoloader.php';
@@ -28,10 +30,10 @@
     else
     {
         include_once __DIR__ . '/../lib/utils/benchmarker.php';
-        include_once __DIR__ . '/../lib/users/userMan.php';
-        include_once __DIR__ . '/../lib/users/rightsMan.php';
-        include_once __DIR__ . '/../lib/i18n/localeLoader.php';
-        include_once __DIR__ . '/../lib/utils/utils.php';
+        include_once __DIR__ . '/../lib/users/UserMan.php';
+        include_once __DIR__ . '/../lib/users/RightsMan.php';
+        include_once __DIR__ . '/../lib/i18n/LocaleLoader.php';
+        include_once __DIR__ . '/../lib/utils/Utils.php';
         include_once __DIR__ . '/../lib/mvc/Module.php';
         include_once __DIR__ . '/../lib/cache/CacheProvider.php';
     }
@@ -75,8 +77,8 @@
     define('DEFAULT_LOCALE', $firstLocale['locale']); // i18n file to call
 
     $currentLocale = DEFAULT_LOCALE; // Runtime locale definitions
-    if (\MuPHP\Accounts\userMan::loggedIn())
-        $currentLocale = \MuPHP\Accounts\userMan::currentUser()->getUserLocale();
+    if (\MuPHP\Users\UserMan::loggedIn())
+        $currentLocale = \MuPHP\Users\UserMan::currentUser()->getUserLocale();
 
     $shortLocale = substr($currentLocale, 0, 2);
     define('CURRENT_LOCALE', $currentLocale);

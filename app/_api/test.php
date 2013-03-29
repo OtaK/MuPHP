@@ -1,9 +1,9 @@
 <?php
     namespace MuPHP\WebserviceServer\Endpoint;
-    require_once __DIR__ . '/../lib/db/dbMan.php';
-    require_once __DIR__ . '/../lib/crypto/hashMan.php';
+    require_once __DIR__ . '/../lib/db/DBMan.php';
+    require_once __DIR__ . '/../lib/crypto/HashMan.php';
 
-    class auth extends \MuPHP\WebserviceServer\apWs
+    class auth extends \MuPHP\WebserviceServer\APWS
     {
         /**
          * Abstract ctor forcing children to implement it (configuration part)

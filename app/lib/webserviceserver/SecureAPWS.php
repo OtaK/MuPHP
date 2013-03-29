@@ -29,9 +29,9 @@
      */
 
     namespace MuPHP\WebserviceServer;
-    require_once __DIR__ . '/apWs.php';
+    require_once __DIR__ . '/APWS.php';
 
-    class apWsWrongAPIKeyException extends \Exception
+    class SecureAPWSWrongAPIKeyException extends \Exception
     {
         public function __construct()
         {
@@ -42,9 +42,9 @@
     /**
      * @package MuPHP
      * @subpackage Webservice Server
-     * secureApWs is a subclass of apWs which implements most secure mecanisms in web API providers
+     * SecureAPWS is a subclass of APWS which implements most secure mecanisms in web API providers
      */
-    abstract class secureApWs extends apWs
+    abstract class SecureAPWS extends APWS
     {
 
         private
@@ -81,7 +81,7 @@
 
         /**
          * @todo
-         * @throws apWsWrongAPIKeyException
+         * @throws SecureAPWSWrongAPIKeyException
          * @return bool|void
          */
         public function gatherInputData()
@@ -96,16 +96,16 @@
 
             $this->_apiKey = $this->_data['apiKey'];
             // TODO Check api key
-            list($found) = \MuPHP\DB\dbMan::get_instance()->singleResQuery("
+            list($found) = \MuPHP\DB\DBMan::get_instance()->singleResQuery("
                 SELECT id FROM users WHERE api_key = '%s'",
                 array($this->_apiKey),
                 MYSQLI_NUM
             );
 
             if (!$found)
-                self::quit(new apWsWrongAPIKeyException());
+                self::quit(new SecureAPWSWrongAPIKeyException());
 
-          /*  list($this->_privateKey) = \MuPHP\DB\dbMan::get_instance()->singleResQuery("
+          /*  list($this->_privateKey) = \MuPHP\DB\DBMan::get_instance()->singleResQuery("
                 SELECT user_private_key
                 FROM user_keys
                 WHERE api_key = '%s'",
@@ -114,7 +114,7 @@
             if (!$this->_privateKey) return;
 
             // need unencrypted data
-            $this->_inputData = \MuPHP\Crypt\cryptMan::decrypt($this->_data['hashedData'], \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_WS);*/
+            $this->_inputData = \MuPHP\Crypt\CryptMan::decrypt($this->_data['hashedData'], \MuPHP\Crypt\CryptMan::CRYPTMAN_MODE_WS);*/
             $this->_uid = $found;
             $this->_inputData = &$this->_data['data'];
             return true;

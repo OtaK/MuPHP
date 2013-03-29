@@ -26,7 +26,7 @@
      * @changelog
      *      1.0 : initial release
      */
-    namespace MuPHP\Hash;
+    namespace MuPHP\Crypto;
 
     /**
      * @package    MuPHP
@@ -35,7 +35,7 @@
      * One-way ciphering engine to hash data with the help of a salt, can do many passes to encrypt data
      * Credits phpass, improved version for PHP5+ and better organization
      */
-    class hashMan
+    class HashMan
     {
         private
             $_portableHashes,
@@ -150,7 +150,7 @@
     }
 
     /**
-     * Helper class for the hashMan
+     * Helper class for the HashMan
      */
     class saltGenerator
     {

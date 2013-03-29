@@ -30,7 +30,7 @@
     /**
      * Allows to benchmark a part of code, with different units/precision
      */
-    class benchmarker
+    class MuBenchmarker
     {
         private
             $start,
@@ -160,9 +160,9 @@
 
         /**
          * Adds the total time of the other benchmarker to this current one
-         * @param benchmarker $otherBenchmarker
+         * @param MuBenchmarker $otherBenchmarker
          */
-        public function addTotalTime(benchmarker $otherBenchmarker)
+        public function addTotalTime(MuBenchmarker $otherBenchmarker)
         {
             $this->totalTime += $otherBenchmarker->totalTime;
         }

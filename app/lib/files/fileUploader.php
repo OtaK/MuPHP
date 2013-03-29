@@ -51,7 +51,7 @@
      * @changelog
      *      1.0 : initial release
      */
-    class fileUploader
+    class FileUploader
     {
         const
             UPLOAD_PATH     = '/media/uploads/',

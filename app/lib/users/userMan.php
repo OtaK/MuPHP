@@ -24,16 +24,16 @@
      * @copyright  Copyright (c) 2011, Mathieu AMIOT
      * @version    1.0
      */
-    namespace MuPHP\Accounts;
+    namespace MuPHP\Users;
     require_once dirname(__FILE__) . '/../../cfg/define.php';
-    require_once dirname(__FILE__) . '/../crypto/cryptMan.php';
+    require_once dirname(__FILE__) . '/../crypto/CryptMan.php';
 
     /**
      * @package    MuPHP
      * @subpackage Accounts
      *             Class to manage an user, plus password encryption inside cookies
      */
-    class userMan
+    class UserMan
     {
         protected
             $user_id,
@@ -64,7 +64,7 @@
                 $this->auth_level       = $authlevel;
                 $this->user_locale      = $locale;
                 $this->user_name        = $username;
-                $this->encrypted_passwd = \MuPHP\Crypt\cryptMan::encrypt($passwd);
+                $this->encrypted_passwd = \MuPHP\Crypto\CryptMan::encrypt($passwd);
             }
             else
                 $this->loadFromCookies();
@@ -77,7 +77,7 @@
          */
         public function setPassword($newClearPass)
         {
-            $this->encrypted_passwd = \MuPHP\Crypt\cryptMan::encrypt($newClearPass, \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
+            $this->encrypted_passwd = \MuPHP\Crypto\CryptMan::encrypt($newClearPass, \MuPHP\Crypto\CryptMan::CRYPTMAN_MODE_DATA);
         }
 
         /* Getters and setters */
@@ -150,7 +150,7 @@
         /**
          * Gets the current user logged in or null on fail
          * @static
-         * @return userMan|null
+         * @return UserMan|null
          */
         public static function currentUser()
         {
@@ -196,7 +196,7 @@
          */
         public function saveToCookies()
         {
-            $classData             = \MuPHP\Crypt\cryptMan::encrypt(serialize($this), \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
+            $classData             = \MuPHP\Crypto\CryptMan::encrypt(serialize($this), \MuPHP\Crypto\CryptMan::CRYPTMAN_MODE_DATA);
             $_COOKIE['LOGIN_DATA'] = $classData;
             return setcookie('LOGIN_DATA', $classData, time() + 31536000, SITE_PATH, null, false, true);
         }
@@ -220,16 +220,16 @@
         public function loadFromCookies()
         {
             if (!isset($_COOKIE['LOGIN_DATA'])) return false;
-            $obj = unserialize(\MuPHP\Crypt\cryptMan::decrypt($_COOKIE['LOGIN_DATA'], \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA));
+            $obj = unserialize(\MuPHP\Crypto\CryptMan::decrypt($_COOKIE['LOGIN_DATA'], \MuPHP\Crypto\CryptMan::CRYPTMAN_MODE_DATA));
             if (get_class($obj) != 'userMan') return false;
-            /** @var userMan $obj */
+            /** @var UserMan $obj */
             $this->auth_level       = $obj->auth_level;
             $this->encrypted_passwd = $obj->encrypted_passwd;
             $this->user_email       = $obj->user_email;
             $this->user_id          = $obj->user_id;
             $this->user_name        = $obj->user_name;
             $this->loggedIn         = $obj->loggedIn;
-            $data                   = \MuPHP\DB\dbMan::get_instance()->singleResQuery("SELECT * FROM users WHERE user_id = '%d'", array($this->user_id));
+            $data                   = \MuPHP\DB\DBMan::get_instance()->singleResQuery("SELECT * FROM users WHERE user_id = '%d'", array($this->user_id));
             if ($this->matchDbData($data))
             {
                 if ($this->loggedIn)
@@ -263,8 +263,8 @@
         {
             if (!isset($data['user_id'], $data['user_email'], $data['user_pwd'], $data['user_status'])) return false;
 
-            $clearPasswd            = \MuPHP\Crypt\cryptMan::decrypt($data['user_pwd'], \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DB);
-            $this->encrypted_passwd = \MuPHP\Crypt\cryptMan::encrypt($clearPasswd, \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
+            $clearPasswd            = \MuPHP\Crypto\CryptMan::decrypt($data['user_pwd'], \MuPHP\Crypto\CryptMan::CRYPTMAN_MODE_DB);
+            $this->encrypted_passwd = \MuPHP\Crypto\CryptMan::encrypt($clearPasswd, \MuPHP\Crypto\CryptMan::CRYPTMAN_MODE_DATA);
             $this->auth_level       = $data['user_status'];
             $this->user_email       = $data['user_email'];
             $this->user_id          = $data['user_id'];
@@ -282,8 +282,8 @@
         {
             if (!isset($data['user_id'], $data['user_email'], $data['user_pwd'], $data['user_status'], $data['user_enabled'])) return false;
 
-            $clearDbPasswd   = \MuPHP\Crypt\cryptMan::decrypt($data['user_pwd'], \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DB);
-            $clearThisPasswd = \MuPHP\Crypt\cryptMan::decrypt($this->encrypted_passwd, \MuPHP\Crypt\cryptMan::CRYPTMAN_MODE_DATA);
+            $clearDbPasswd   = \MuPHP\Crypto\CryptMan::decrypt($data['user_pwd'], \MuPHP\Crypto\CryptMan::CRYPTMAN_MODE_DB);
+            $clearThisPasswd = \MuPHP\Crypto\CryptMan::decrypt($this->encrypted_passwd, \MuPHP\Crypto\CryptMan::CRYPTMAN_MODE_DATA);
 
             $result = (
                 $data['user_id'] == $this->user_id

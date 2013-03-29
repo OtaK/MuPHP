@@ -28,7 +28,7 @@
 	 */
 	namespace MuPHP\Mobile;
 
-	class mobileDetector
+	class MobileDetector
 	{
 		private
 				$_ua,

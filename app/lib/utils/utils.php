@@ -27,7 +27,7 @@
      * @changelog
      *      0.1a : in progress
      */
-    class utils
+    class Utils
     {
         public static function trimText($text, $nbChars = 46)
         {
@@ -57,7 +57,8 @@
             }
         }
         
-        public static function base64UrlDecode($input) {
+        public static function base64UrlDecode($input)
+        {
             return base64_decode(strtr($input, '-_', '+/'));
         }
     }

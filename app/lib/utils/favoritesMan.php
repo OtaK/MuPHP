@@ -24,7 +24,7 @@
 	 * @copyright Copyright (c) 2011, Mathieu AMIOT
 	 * @version 1.0
 	 */
-    namespace MuPHP\CookieFav;
+    namespace MuPHP\Utils;
 	require_once dirname(__FILE__) . '/../../cfg/define.php';
 
 	/**
@@ -32,7 +32,7 @@
 	 * @subpackage CookieFav
 	 * Allows to manage per-user favorites inside a serialized cookie
 	 */
-	class favoritesMan
+	class FavoritesMan
 	{
 		static private $data;
 		static private $uid;
@@ -62,7 +62,7 @@
                 self::$data = array();
 
 	        @session_start();
-	        if (\MuPHP\Accounts\userMan::loggedIn())
+	        if (\MuPHP\Users\UserMan::loggedIn())
 	            self::$uid = $_SESSION['USER_DATA']->getUserId();
 	        else
 		        self::$uid = false;

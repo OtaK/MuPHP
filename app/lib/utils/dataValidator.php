@@ -26,7 +26,7 @@
 	 * @changelog
      *      1.0 : initial release
 	 */
-    class dataValidator
+    class DataValidator
     {
         const
             VALIDATE_EMAIL = '/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i',

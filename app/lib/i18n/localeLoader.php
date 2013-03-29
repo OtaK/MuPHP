@@ -26,7 +26,7 @@
      *      0.5a : first stable alpha
      *      0.1 : pre-version
      */
-    namespace MuPHP\Locales;
+    namespace MuPHP\I18n;
     include_once __DIR__ . '/../../cfg/define.php';
 
     class LocaleNotFoundException extends \Exception
@@ -54,7 +54,7 @@
     }
 
 
-    class localeLoader
+    class LocaleLoader
     {
         const
             LOCALE_HEADER = 'header',

@@ -8,12 +8,12 @@
             $querySet = '';
             foreach ($_POST as $key => $val)
             {
-                $querySet .= \MuPHP\DB\dbMan::get_instance()->safeQuery(
+                $querySet .= \MuPHP\DB\DBMan::get_instance()->safeQuery(
                     '__TABLE_NAME___%s = \'%s\''.PHP_EOL,
                     array($key, $val)
                 );
             }
-            $result = \MuPHP\DB\dbMan::get_instance()->query('INSERT INTO __TABLE_NAME__s SET '.$querySet);
+            $result = \MuPHP\DB\DBMan::get_instance()->query('INSERT INTO __TABLE_NAME__s SET '.$querySet);
             $this->templateVar('result', $result);
         }
 
@@ -22,12 +22,12 @@
             $querySet = '';
             foreach ($_POST as $key => $val)
             {
-                $querySet .= \MuPHP\DB\dbMan::get_instance()->safeQuery(
+                $querySet .= \MuPHP\DB\DBMan::get_instance()->safeQuery(
                     '__TABLE_NAME___%s = \'%s\''.PHP_EOL,
                     array($key, $val)
                 );
             }
-            $result = \MuPHP\DB\dbMan::get_instance()->query('
+            $result = \MuPHP\DB\DBMan::get_instance()->query('
                 UDPATE __TABLE_NAME__s SET '.$querySet.' WHERE __TABLE_NAME___id = \'%d\'',
                 array($id)
             );
@@ -36,7 +36,7 @@
         }
         public function delete($id)
         {
-            $result = \MuPHP\DB\dbMan::get_instance()->query('
+            $result = \MuPHP\DB\DBMan::get_instance()->query('
                 DELETE FROM __TABLE_NAME__s WHERE __TABLE_NAME___id = \'%d\'',
                 array($id)
             );
@@ -47,7 +47,7 @@
 
         public function index()
         {
-            $data = \MuPHP\DB\dbMan::get_instance()->query('
+            $data = \MuPHP\DB\DBMan::get_instance()->query('
                 SELECT *
                 FROM __TABLE_NAME__s
                 ORDER BY __TABLE_NAME___id ASC'
@@ -58,7 +58,7 @@
 
         public function details($id)
         {
-            $data = \MuPHP\DB\dbMan::get_instance()->singleResQuery("
+            $data = \MuPHP\DB\DBMan::get_instance()->singleResQuery("
                 SELECT *
                 FROM __TABLE_NAME__s
                 WHERE __TABLE_NAME___id = '%d'",
