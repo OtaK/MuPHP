@@ -31,7 +31,6 @@
      *      0.1a : in progress
      */
     namespace MuPHP\WebserviceServer;
-    require_once __DIR__.'/../../cfg/define.php';
 
     class APWSWebserviceNotFoundException extends \Exception
     {

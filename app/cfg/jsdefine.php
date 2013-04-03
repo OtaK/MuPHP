@@ -3,7 +3,6 @@
     if (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest')
         die(json_encode(null, JSON_FORCE_OBJECT));
 
-    define('AUTOLOAD', false);
     include_once 'define.php';
     $i18n = new \MuPHP\i18n\LocaleLoader($shortLocale);
     $i18n->selectSection(\MuPHP\i18n\LocaleLoader::LOCALE_DIALOGS);

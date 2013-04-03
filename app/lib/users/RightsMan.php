@@ -17,16 +17,16 @@
      *
      */
 
-   /**
-	 * @package MuPHP
-	 * @subpackage Auth
-	 * @author Mathieu AMIOT <m.amiot@otak-arts.com>
-	 * @copyright Copyright (c) 2013, Mathieu AMIOT
-	 * @version 1.1
-	 * @changelog
+    /**
+     * @package    MuPHP
+     * @subpackage Auth
+     * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
+     * @copyright  Copyright (c) 2013, Mathieu AMIOT
+     * @version    1.1
+     * @changelog
      *      1.1 : Introduction of namespace use
-	 *      1.0 : initial release
-	 */
+     *      1.0 : initial release
+     */
     namespace MuPHP\Users;
 
     /**
@@ -46,7 +46,7 @@
         public function __construct(array &$modules)
         {
             if (isset(self::$_siteModules)) return;
-            self::$_siteModules = &$modules;
+            self::$_siteModules = & $modules;
         }
 
         /**
@@ -54,7 +54,10 @@
          * @static
          * @return array
          */
-        static public function getModules() { return self::$_siteModules; }
+        static public function getModules()
+        {
+            return self::$_siteModules;
+        }
 
         /**
          * Checks if the current user has the right to access the page
@@ -76,8 +79,10 @@
 
                     return true;
                 }
+
                 return false;
             }
+
             return true;
         }
     }

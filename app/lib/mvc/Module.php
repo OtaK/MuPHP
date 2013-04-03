@@ -2,8 +2,6 @@
 
     namespace MuPHP\MVC;
     include_once __DIR__ . '/../abstraction/DesignPatterns.php';
-    require_once __DIR__ . '/../users/UserMan.php';
-    require_once __DIR__ . '/../db/DBMan.php';
 
     /**
      *
@@ -289,7 +287,7 @@
             {
                 while (false !== ($modFile = $controllersFolder->read()))
                 {
-                    if ($modFile == '.' || $modFile == '..') continue;
+                    if (empty($modFile) || $modFile[0] == '.') continue;
                     require_once __DIR__."/../../_ctl/{$modFile}"; // include to get class constants
                     $data = array();
                     $tmp       = explode('.', $modFile);

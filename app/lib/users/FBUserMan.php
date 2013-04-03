@@ -28,7 +28,6 @@
      *      1.0 : initial release
      */
     namespace MuPHP\Users;
-    require_once __DIR__ . '/UserMan.php';
 
     class fbUserManNotConfiguredException extends \Exception
     {

@@ -25,8 +25,6 @@
      * @version    1.0
      */
     namespace MuPHP\Users;
-    require_once dirname(__FILE__) . '/../../cfg/define.php';
-    require_once dirname(__FILE__) . '/../crypto/CryptMan.php';
 
     /**
      * @package    MuPHP
@@ -221,7 +219,7 @@
         {
             if (!isset($_COOKIE['LOGIN_DATA'])) return false;
             $obj = unserialize(\MuPHP\Crypto\CryptMan::decrypt($_COOKIE['LOGIN_DATA'], \MuPHP\Crypto\CryptMan::CRYPTMAN_MODE_DATA));
-            if (get_class($obj) != 'userMan') return false;
+            if (get_class($obj) != 'MuPHP\\Users\\UserMan') return false;
             /** @var UserMan $obj */
             $this->auth_level       = $obj->auth_level;
             $this->encrypted_passwd = $obj->encrypted_passwd;

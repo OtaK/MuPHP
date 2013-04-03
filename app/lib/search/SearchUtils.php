@@ -30,8 +30,6 @@
      * @todo Implement the way to have multiple fields to search keywords in
 	 */
     namespace MuPHP\Search;
-	require_once dirname(__FILE__) . '/../../cfg/define.php';
-
 
 	/**
 	 * @package    MuPHP

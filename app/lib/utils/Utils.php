@@ -35,27 +35,6 @@
             if ($len < $nbChars) return $text;
             return substr($text, 0, $nbChars - 4).' [&hellip;]';
         }
-
-        public static function safeInclude($path, $once = false, $require = false)
-        {
-            if (file_exists($path))
-            {
-                if ($require)
-                {
-                    if ($once)
-                        require_once $path;
-                    else
-                        require $path;
-                }
-                else
-                {
-                    if ($once)
-                        include_once $path;
-                    else
-                        include $path;
-                }
-            }
-        }
         
         public static function base64UrlDecode($input)
         {

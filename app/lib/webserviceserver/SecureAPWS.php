@@ -29,7 +29,6 @@
      */
 
     namespace MuPHP\WebserviceServer;
-    require_once __DIR__ . '/APWS.php';
 
     class SecureAPWSWrongAPIKeyException extends \Exception
     {

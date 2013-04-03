@@ -19,24 +19,8 @@
 
     // Base includes
     include_once __DIR__ . '/locales.php';
-    //include_once __DIR__ . '/autoloader.php';
-    //spl_autoload_register('MuPHP_spl_autoloader');
-    define('AUTOLOAD', false);
-    if (!defined('AUTOLOAD') || AUTOLOAD)
-    {
-        include_once __DIR__ . '/autoloader.php';
-        MuPHP_autoload();
-    }
-    else
-    {
-        include_once __DIR__ . '/../lib/utils/benchmarker.php';
-        include_once __DIR__ . '/../lib/users/UserMan.php';
-        include_once __DIR__ . '/../lib/users/RightsMan.php';
-        include_once __DIR__ . '/../lib/i18n/LocaleLoader.php';
-        include_once __DIR__ . '/../lib/utils/Utils.php';
-        include_once __DIR__ . '/../lib/mvc/Module.php';
-        include_once __DIR__ . '/../lib/cache/CacheProvider.php';
-    }
+    include_once __DIR__ . '/autoloader.php';
+    spl_autoload_register('MuPHP_spl_autoloader');
     
     // XSS attack protection for identity thief
     ini_set('session.cookie_httponly', true);
@@ -87,9 +71,8 @@
     setlocale(LC_TIME, $currentLocale.'.UTF8'); // Locale definition for time expression
 
     // Redis automatically cached queries keys prefix
-    // Redis automatically cached queries keys prefix
     define('CACHE_DEFAULT_ENGINE', \MuPHP\Cache\CacheProvider::CACHE_REDIS);
-    define('CACHE_SESSIONS', true);
+    define('CACHE_SESSIONS', false);
     if (CACHE_SESSIONS)
         \MuPHP\Cache\CacheProvider::EnableSessionCaching(CACHE_DEFAULT_ENGINE);
     define('CACHE_SQLCACHE_PREFIX', CACHE_KEYPREFIX.':dbcache:');

@@ -21,7 +21,7 @@
     {
         if (!isset($argv))
             $argv = &$_SERVER['argv'];
-        require_once __DIR__.'/app/lib/cli/Console.php';
+        //require_once __DIR__.'/app/lib/cli/Console.php';
         \MuPHP\CLI\Console::boot($argv);
         die('Bye!');
     }
@@ -31,7 +31,6 @@
 
     if (DEBUG)
     {
-        require_once __DIR__.'/app/lib/utils/benchmarker.php';
         $siteBenchmark = new \MuPHP\Performance\MuBenchmarker();
         $siteBenchmark->start();
     }

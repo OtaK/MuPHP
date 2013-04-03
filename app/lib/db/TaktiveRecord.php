@@ -28,7 +28,6 @@
      */
 
     namespace MuPHP\DB;
-    require_once __DIR__ . '/DBMan.php';
 
     class TaktiveRecordSchema
     {

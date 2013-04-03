@@ -25,7 +25,6 @@
 	 * @version 1.0
 	 */
     namespace MuPHP\Utils;
-	require_once dirname(__FILE__) . '/../../cfg/define.php';
 
 	/**
 	 * @package MuPHP
