@@ -6,7 +6,7 @@
     </dialogs>
     <header>
         <text xml:id="site_description">Description du site</text>
-        <text xml:id=="keywords">test,MuPHP,otak,framework</text>
+        <text xml:id="keywords">test,MuPHP,otak,framework</text>
     </header>
     <content>
         <page xml:id="home" title="Accueil" menulabel="Accueil">
