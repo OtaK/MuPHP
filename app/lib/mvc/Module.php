@@ -55,9 +55,9 @@
         }
 
         /**
-         * @param \MuPHP\I18n\LocaleLoader $i18n
+         * @param \MuPHP\i18n\LocaleLoader $i18n
          */
-        public function setIntlEngine(\MuPHP\I18n\LocaleLoader &$i18n)
+        public function setIntlEngine(\MuPHP\i18n\LocaleLoader &$i18n)
         {
             $this->_i18n = &$i18n;
         }
@@ -90,7 +90,7 @@
          */
         protected function _render()
         {
-            $this->_i18n->selectSection(\MuPHP\I18n\LocaleLoader::LOCALE_CONTENT);
+            $this->_i18n->selectSection(\MuPHP\i18n\LocaleLoader::LOCALE_CONTENT);
             $this->_i18n->getPageNode($this->_fileName);
             $headFile = __DIR__.'/../../_tpl/_canvas/' . self::HEAD_CANVAS . '.phtml';
             if (file_exists($headFile))
@@ -111,7 +111,7 @@
             else
                 throw new \Exception('No template file found! path='.$tplFile);
 
-            $this->_i18n->selectSection(\MuPHP\I18n\LocaleLoader::LOCALE_FOOTER);
+            $this->_i18n->selectSection(\MuPHP\i18n\LocaleLoader::LOCALE_FOOTER);
             $footFile = __DIR__.'/../../_tpl/_canvas/' . self::FOOT_CANVAS . '.phtml';
             if (file_exists($footFile))
                 include $footFile;

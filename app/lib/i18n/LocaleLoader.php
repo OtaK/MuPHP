@@ -26,7 +26,7 @@
      *      0.5a : first stable alpha
      *      0.1 : pre-version
      */
-    namespace MuPHP\I18n;
+    namespace MuPHP\i18n;
     include_once __DIR__ . '/../../cfg/define.php';
 
     class LocaleNotFoundException extends \Exception

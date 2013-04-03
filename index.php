@@ -42,7 +42,7 @@
     $currentLocale = \MuPHP\Users\UserMan::loggedIn() ? \MuPHP\Users\UserMan::currentUser()->getUserLocale() : DEFAULT_LOCALE;
 
     $pageName = (!isset($_GET['module']) ? 'home' : addslashes($_GET['module'])); // null check & default page
-    $i18n = new \MuPHP\I18n\LocaleLoader($currentLocale);
+    $i18n = new \MuPHP\i18n\LocaleLoader($currentLocale);
     $locales = getLocales();
 
     if ($acl->isAuthorized($pageName))
