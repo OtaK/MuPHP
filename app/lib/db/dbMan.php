@@ -22,14 +22,15 @@
      * @subpackage DB
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
      * @copyright  Copyright (c) 2013, Mathieu AMIOT
-     * @version    1.7
+     * @version    1.7.1
      * @changelog
+     *      1.7.1 : Added Countable implementation to DBResult to be used with count() for num_rows
      *      1.7 : Added composite arguments (%v) to query for array arguments. (nice for IN() queries)
      *      1.6 : Added cached query support
      *      1.5.1 : Added db name property
-     *      1.5 : Added iteration modes and XSS protection mode to dbResult
+     *      1.5 : Added iteration modes and XSS protection mode to DBResult
      *      1.4.1 : Added design pattern usage hint to DBMan
-     *      1.4 : Added Iterator support to dbResult, so it can be browsed with a foreach loop
+     *      1.4 : Added Iterator support to DBResult, so it can be browsed with a foreach loop
      *      1.3 : Multiple connection support
      *      1.2 : Introduction of namespace use
      *      1.1 : Added magic method to get MySQLi_Result properties + doc for IDE hinting
@@ -42,7 +43,7 @@
 
     /**
      * DBMan is an overlay (and a singleton) to MySQLi and allows queries to be automatically escaped against SQL injections
-     * It depends on the dbResult class further below in this subpackage
+     * It depends on the DBResult class further below in this subpackage
      */
     class DBMan extends \mysqli implements \MuPHP\Abstraction\iSingleton
     {
@@ -146,19 +147,19 @@
          * Executes a safe query and returns the result of it
          * @param string $query
          * @param array  $params
-         * @return boolean|dbResult
+         * @return boolean|DBResult
          */
         public function query($query, array $params = array())
         {
             $result = parent::query($this->safeQuery($query, $params));
-            return is_bool($result) ? $result : new dbResult($result);
+            return is_bool($result) ? $result : new DBResult($result);
         }
 
         /**
          * Executes a safe query using the current caching mechanism (cached if select only)
          * @param $query
          * @param array $params
-         * @return array|bool|dbResult|string
+         * @return array|bool|DBResult|string
          */
         public function cachedQuery($query, array $params = array())
         {
@@ -175,8 +176,8 @@
             if (is_bool($queryRes))
                 return $queryRes;
 
-            $queryRes = new dbResult($queryRes);
-            /** @var $queryRes dbResult */
+            $queryRes = new DBResult($queryRes);
+            /** @var $queryRes DBResult */
             $cacheRes = $queryRes->fetch_all(MYSQLI_ASSOC);
             \MuPHP\Cache\CacheProvider::get_instance()->set($cacheKey, $cacheRes);
             return $cacheRes;
@@ -296,7 +297,7 @@
     /**
      * @package    MuPHP
      * @subpackage DB
-     *             dbResult is an overlay to MySQLi_Result
+     *             DBResult is an overlay to MySQLi_Result
      *             It allows to escape results produced by DBMan::query() against XSS attacks
      * @see        dbMan::query()
      *
@@ -306,7 +307,7 @@
      * @property-read int $current_field
      * @property-read array $lengths
      */
-    class dbResult implements \Iterator
+    class DBResult implements \Iterator, \Countable
     {
         const
             ITERATE_ASSOC = MYSQLI_ASSOC,
@@ -507,7 +508,7 @@
         }
 
         /**
-         * Calls dbResult::fetch_array() with the MYSQLI_ASSOC mode
+         * Calls DBResult::fetch_array() with the MYSQLI_ASSOC mode
          * @see dbResult::fetch_array()
          * @param bool $xss
          * @return array|bool
@@ -518,7 +519,7 @@
         }
 
         /**
-         * Calls dbResult::fetch_array() with the MYSQLI_NUM mode
+         * Calls DBResult::fetch_array() with the MYSQLI_NUM mode
          * @see dbResult::fetch_array()
          * @param bool $xss
          * @return array|bool
@@ -589,5 +590,19 @@
         static public function xssProtectCallback(&$val, $key)
         {
             $val = htmlspecialchars($val);
+        }
+
+        /**
+         * (PHP 5 &gt;= 5.1.0)<br/>
+         * Count elements of an object
+         * @link http://php.net/manual/en/countable.count.php
+         * @return int The custom count as an integer.
+         * </p>
+         * <p>
+         *       The return value is cast to an integer.
+         */
+        public function count()
+        {
+            return $this->_innerRes->num_rows;
         }
     }

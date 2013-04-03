@@ -108,7 +108,7 @@
         /**
          * @param array $fbData         FB data from JSON Response
          * @param array &$internalData  Internal data after insert into DB
-         * @return bool|\MuPHP\DB\dbResult
+         * @return bool|\MuPHP\DB\DBResult
          */
         protected function registerOrUpdate(array $fbData, array &$internalData)
         {

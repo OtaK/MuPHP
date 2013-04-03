@@ -165,9 +165,9 @@
         /**
          * Ctor
          * @param dbField $field
-         * @param \MuPHP\DB\dbResult $res
+         * @param \MuPHP\DB\DBResult $res
          */
-        public function __construct(dbField &$field, \MuPHP\DB\dbResult &$res)
+        public function __construct(dbField &$field, \MuPHP\DB\DBResult &$res)
         {
             $this->_queryResult = $res;
             $this->_curData = $this->_queryResult->fetch_assoc();
