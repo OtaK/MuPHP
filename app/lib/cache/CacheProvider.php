@@ -305,6 +305,21 @@
 
             return $val;
         }
+        
+        
+        /**
+         * Deletes a key from cache storage
+         * @param $key
+         * @return bool
+         * @throws CacheEngineNotSet
+         */
+        public function delete($key)
+        {
+            if ($this->_currentProvider === self::CACHE_NONE)
+                throw new CacheEngineNotSet();
+
+            return (bool)$this->_provider->delete($this->_prefixKey($key));
+        }
 
         /**
          * Private utility function to prefix provided key with defined constants
