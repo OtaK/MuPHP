@@ -103,6 +103,17 @@
 
             $this->_provider->close();
         }
+        
+        /**
+         * Magic~
+         * @param $name
+         * @param $arguments
+         */
+        function __call($name, $arguments)
+        {
+            if (method_exists($this->_provider, $name))
+                call_user_func_array(array($this->_provider, $name), $arguments);
+        }
 
         /**
          * @param int $provider constant
