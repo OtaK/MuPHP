@@ -239,7 +239,7 @@
             $result = $this->_provider->get($cacheKey);
 
             $tmp = json_decode($result, true);
-            if (json_last_error() === JSON_ERROR_NONE)
+            if ($tmp !== null && json_last_error() === JSON_ERROR_NONE)
                 return $tmp;
 
             return $result;
