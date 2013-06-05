@@ -193,7 +193,7 @@
             if (!count($params))
                 return $query;
 
-	    if (stripos($query, '%v') !== false)
+            if (preg_match('/%v[s|d|f]/', $query) === 1)
                 self::_filterCompositeArgs($query, $params, $this);
 
             array_walk($params, '\MuPHP\DB\dbMan::escapeCallback', $this);
@@ -212,13 +212,35 @@
             $paramIndex = 0;
             $callback = function($matches) use (&$paramIndex, &$params, &$helper)
             {
-                // if vd or vs, replace dat shit
+                // if vd, vf or vs, replace dat shit
                 $result = $matches[0];
-                if (stripos($result, '%v') !== false && is_array($params[$paramIndex]))
+                if (preg_match('/%(v[s|d|f])/', $result, $matchedParam) === 1 && is_array($params[$paramIndex]))
                 {
+                    $typeCast = function(&$param) { throw new \Exception('Type param is not provided as expected'); };
+                    switch ($matchedParam[0])
+                    {
+                        case 'vs':
+                        {
+                            $typeCast = function(&$param) { $param = strval($param); };
+                            break;
+                        }
+                        case 'vd':
+                        {
+                            $typeCast = function(&$param) { $param = intval($param); };
+                            break;
+                        }
+                        case 'vf':
+                        {
+                            $typeCast = function(&$param) { $param = doubleval($param); };
+                            break;
+                        }
+                    }
                     $data = $params[$paramIndex];
                     foreach ($data as &$d)
+                    {
+                        $typeCast($d);
                         $d = $helper->real_escape_string($d);
+                    }
 
                     unset($params[$paramIndex]);
                     $result = "'" . implode("','", $data) . "'";
@@ -231,6 +253,7 @@
 
             $params = array_values($params);
             $query = preg_replace_callback('/%[b|c|d|e|E|u|f|F|g|G|o|s|x|X|v|V]/', $callback, $query);
+            $params = array_values($params);
         }
 
         /**
