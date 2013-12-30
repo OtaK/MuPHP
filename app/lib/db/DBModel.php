@@ -29,11 +29,8 @@
     namespace MuPHP\DB;
 
 
-    use MuPHP\DB\QueryGenerator\DBUpdateQueryGenerator;
-
-    class DBModel
+    abstract class DBModel
     {
-        private $__timestamps;
         public $id;
         public $created_at;
         public $updated_at;
@@ -93,12 +90,15 @@
         }
 
         /**
+         * Deletes an id from the table
          * @param $id
-         * @todo
+         * @return bool
          */
         public static function destroy($id)
         {
-            // TODO
+            $query = new DBDeleteQueryGenerator(static::_tableName());
+            $query->where('id', '=', $id);
+            return $query->run();
         }
 
         /**
