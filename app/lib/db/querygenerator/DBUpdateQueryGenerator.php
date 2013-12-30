@@ -43,6 +43,7 @@
         {
             parent::__construct($table, $db);
             $this->_set            = array();
+            $this->_conditions     = array();
         }
 
         /**
