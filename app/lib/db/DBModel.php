@@ -74,6 +74,7 @@
                 'defaultValue' => 'NULL'
             )
         );
+        private $_dirty;
         private $_fields;
         private $_values;
 
@@ -97,6 +98,7 @@
             }
 
             $this->id = null;
+            $this->_dirty = true;
         }
 
         /**
@@ -145,7 +147,10 @@
                 unset($row['_created_at_ts'], $row['_updated_at_ts']);
             }
 
-            return static::_factoryWithData($row);
+            $obj = static::_factoryWithData($row);
+            $obj->_dirty = false;
+
+            return $obj;
         }
 
         /**
@@ -221,7 +226,9 @@
                     $row['created_at'] = (int)$row['_created_at_ts'];
                     unset($row['_created_at_ts'], $row['_updated_at_ts']);
                 }
-                $result[] = static::_factoryWithData($row);
+                $obj = static::_factoryWithData($row);
+                $obj->_dirty = false;
+                $result[] = $obj;
             }
 
             return $result;
@@ -297,7 +304,10 @@
         public function __set($name, $value)
         {
             if (isset($this->_fields[$name]))
+            {
                 $this->_values[$name] = $value;
+                $this->_dirty = true;
+            }
         }
 
         /**
@@ -337,6 +347,17 @@
             if ($insert)
                 $this->id = $query->getInsertId();
 
+            $this->_dirty = false;
+
             return $this;
+        }
+
+        /**
+         * Checks if the current DAO is dirty
+         * @return bool
+         */
+        public function isDirty()
+        {
+            return $this->_dirty;
         }
     }
