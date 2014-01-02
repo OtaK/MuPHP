@@ -91,7 +91,7 @@
 
             if (static::$_enableTimestamps)
             {
-                $this->_fields = array_merge($this->_fields, static::$__timestampsDefinition);
+                $this->_fields    = array_merge($this->_fields, static::$__timestampsDefinition);
                 $this->created_at = time();
                 $this->updated_at = null;
             }
@@ -310,7 +310,7 @@
             $insert    = $this->id === null;
             $className = $insert ? "DBInsertQueryGenerator" : "DBUpdateQueryGenerator";
             /** @var DBInsertQueryGenerator|DBUpdateQueryGenerator $query */
-            $query     = new $className(static::_tableName());
+            $query = new $className(static::_tableName());
             foreach ($this->_values as $name => $var)
             {
                 if ($name !== 'id')
@@ -323,13 +323,13 @@
                 if (static::$_enableTimestamps)
                 {
                     $this->updated_at = time();
-                    $query->set('updated_at', 'FROM_UNIXTIME('.$this->updated_at.')', false);
+                    $query->set('updated_at', 'FROM_UNIXTIME(' . $this->updated_at . ')', false);
                 }
             }
             else if (static::$_enableTimestamps)
             {
                 $this->created_at = time();
-                $query->set('created_at', 'FROM_UNIXTIME('.$this->created_at.')', false);
+                $query->set('created_at', 'FROM_UNIXTIME(' . $this->created_at . ')', false);
             }
 
             $query->run();
