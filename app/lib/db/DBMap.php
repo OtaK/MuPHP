@@ -31,5 +31,53 @@
 
     class DBMap
     {
-        // TODO
+        public static function sync($folder, $force = false)
+        {
+            if (!file_exists($folder))
+                return false;
+
+            foreach (glob($folder) as $file)
+            {
+                if ($file[0] === '.' || $file[0] === '_') continue;
+                require($file);
+                $class = substr($file, 0, strpos($file, '.'));
+                $fields = $file::fields();
+                $table = $class::tableName();
+                self::_createTable($table, $fields, $force);
+            }
+
+            return true;
+        }
+
+        private static function _createTable($name, $spec, $force = false)
+        {
+            $q = '';
+            if ($force)
+                $q .= "DROP TABLE $name; ".PHP_EOL;
+            $q .= "CREATE TABLE IF EXISTS $name (".PHP_EOL;
+            foreach ($spec as $field => $fieldSpec)
+            {
+                $q .= "$field {$fieldSpec['type']}";
+                if ($fieldSpec['type'] === 'ENUM')
+                {
+                    $enumSpec = implode("','", $fieldSpec['values']);
+                    $q .= "('$enumSpec')";
+                }
+                $q .= $fieldSpec['defaultValue'] === null ? '' : ' DEFAULT '.$fieldSpec['defaultValue'];
+                $q .= $fieldSpec['allowNull'] ? ' NULL' : ' NOT NULL';
+                if ($fieldSpec['primaryKey'])
+                {
+                    $q .= ' PRIMARY KEY';
+                    if ($fieldSpec['autoIncrement'])
+                        $q .= ' AUTO_INCREMENT';
+                }
+                else if ($fieldSpec['unique'])
+                    $q .= ' UNIQUE';
+
+                $q .= $fieldSpec['comment'] === null ? '' : ' COMMENT "'.$fieldSpec['comment'].'"';
+            }
+            $q .= ") ENGINE=InnoDB;";
+
+            DBMan::get_instance()->multi_query($q);
+        }
     }
