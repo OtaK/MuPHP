@@ -174,6 +174,8 @@
             $obj   = new $class();
             foreach ($data as $field => &$val)
                 $obj->{$field} = $val;
+
+            return $obj;
         }
 
         /**
