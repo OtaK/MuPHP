@@ -41,7 +41,7 @@
                 if ($file[0] === '.' || $file[0] === '_') continue;
                 require($file);
                 $class = substr($file, 0, strpos($file, '.'));
-                $fields = $file::fields();
+                $fields = $class::fields();
                 $table = $class::tableName();
                 self::_createTable($table, $fields, $force);
             }
