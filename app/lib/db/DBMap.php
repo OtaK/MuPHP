@@ -75,7 +75,9 @@
                     $q .= ' UNIQUE';
 
                 $q .= $fieldSpec['comment'] === null ? '' : ' COMMENT "'.$fieldSpec['comment'].'"';
+                $q .= ','.PHP_EOL;
             }
+            $q = substr($q, 0, -2).PHP_EOL;
             $q .= ") ENGINE=InnoDB;";
 
             DBMan::get_instance()->multi_query($q);
