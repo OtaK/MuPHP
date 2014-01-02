@@ -57,6 +57,10 @@
             return self::_uncamelize(end($class));
         }
 
+        /**
+         * Creates a model initiated with given data
+         * @param array $data
+         */
         private static function _factoryWithData(array $data)
         {
             $class = get_called_class();
@@ -65,6 +69,10 @@
                 $obj->{$field} = $val;
         }
 
+        /**
+         * Finds a DAO-enabled object with given criteria
+         * @param array|int|string $criteria
+         */
         public static function find($criteria)
         {
             $query = new DBSelectQueryGenerator(static::_tableName());
