@@ -59,8 +59,7 @@
                 $value = "'$value'";
 
             $w = "$field = $value";
-            if (!in_array($w, $this->_set))
-                $this->_set[] = $w;
+            $this->_set[$field] = $w;
 
             return $this;
         }

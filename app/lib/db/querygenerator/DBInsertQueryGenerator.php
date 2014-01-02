@@ -73,9 +73,7 @@
             if ($quoted)
                 $value = "'{$this->_db->escape_string($value)}'";
 
-            $w = "$field = $value";
-            if (!in_array($w, $this->_onDuplicateKey))
-                $this->_onDuplicateKey[] = $w;
+            $this->_onDuplicateKey[$field] = $value;
 
             return $this;
         }
