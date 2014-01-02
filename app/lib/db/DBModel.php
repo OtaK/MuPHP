@@ -27,6 +27,11 @@
 
     namespace MuPHP\DB;
 
+    use MuPHP\DB\QueryGenerator\DBDeleteQueryGenerator;
+    use MuPHP\DB\QueryGenerator\DBInsertQueryGenerator;
+    use MuPHP\DB\QueryGenerator\DBSelectQueryGenerator;
+    use MuPHP\DB\QueryGenerator\DBUpdateQueryGenerator;
+
     class FieldNotDefinedException extends \Exception
     {
         public function __construct($field)
