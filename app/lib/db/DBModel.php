@@ -279,9 +279,13 @@
         {
             $insert    = $this->id === null;
             $className = $insert ? "DBInsertQueryGenerator" : "DBUpdateQueryGenerator";
+            /** @var DBInsertQueryGenerator|DBUpdateQueryGenerator $query */
             $query     = new $className(static::_tableName());
             foreach ($this->_values as $name => $var)
-                $query->set($name, $var);
+            {
+                if ($name !== 'id')
+                    $query->set($name, $var);
+            }
 
             if (!$insert)
             {
