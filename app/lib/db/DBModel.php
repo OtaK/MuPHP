@@ -83,8 +83,7 @@
          */
         public function __construct()
         {
-            self::_normalizeFields();
-            $this->_fields = array_merge(self::$__fieldsDefinition, static::$__fieldsDefinition);
+            $this->_fields = self::fields();
 
             $this->_values = array();
             foreach ($this->_fields as $fieldName => $spec)
@@ -115,12 +114,22 @@
         }
 
         /**
+         * Gets table fields definition
+         * @return array
+         */
+        public static function fields()
+        {
+            self::_normalizeFields();
+            return array_merge(self::$__fieldsDefinition, static::$__fieldsDefinition);
+        }
+
+        /**
          * Finds a DAO-enabled object with given criteria
          * @param array|int|string $criteria
          */
         public static function find($criteria)
         {
-            $query = new DBSelectQueryGenerator(static::_tableName());
+            $query = new DBSelectQueryGenerator(static::tableName());
 
             if (static::$_enableTimestamps)
             {
@@ -157,7 +166,7 @@
          * Gets linked table name for current class
          * @return string
          */
-        protected static function _tableName()
+        public static function tableName()
         {
             if (static::TABLE_NAME !== null)
                 return static::TABLE_NAME;
@@ -206,7 +215,7 @@
          */
         public static function all(array $criteria = null)
         {
-            $query = new DBSelectQueryGenerator(static::_tableName());
+            $query = new DBSelectQueryGenerator(static::tableName());
             if (static::$_enableTimestamps)
             {
                 $query->select('UNIX_TIMESTAMP(created_at) AS `_created_at_ts`');
@@ -241,7 +250,7 @@
          */
         public static function destroy($id)
         {
-            $query = new DBDeleteQueryGenerator(static::_tableName());
+            $query = new DBDeleteQueryGenerator(static::tableName());
             $query->where('id', '=', $id);
 
             return $query->run();
@@ -320,7 +329,7 @@
             $insert    = $this->id === null;
             $className = $insert ? "DBInsertQueryGenerator" : "DBUpdateQueryGenerator";
             /** @var DBInsertQueryGenerator|DBUpdateQueryGenerator $query */
-            $query = new $className(static::_tableName());
+            $query = new $className(static::tableName());
             foreach ($this->_values as $name => $var)
             {
                 if ($name !== 'id')
