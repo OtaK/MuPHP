@@ -148,6 +148,18 @@
         }
 
         /**
+         * Instanciates an object + saves it instantly and then returns it
+         * @param array $data
+         * @return DBModel
+         */
+        public static function create(array $data)
+        {
+            $obj = static::_factoryWithData($data);
+            $obj->save();
+            return $obj;
+        }
+
+        /**
          * Uncamelizes a string. MyExample => my_example
          * Used for ModelName => table_name translation here
          * @param $str
