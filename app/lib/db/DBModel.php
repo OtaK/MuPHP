@@ -35,6 +35,8 @@
         public $created_at;
         public $updated_at;
 
+        const TABLE_NAME = null;
+
         public function __construct()
         {
             $this->id = null;
@@ -42,9 +44,17 @@
             $this->updated_at = time();
         }
 
+        /**
+         * Gets linked table name for current class
+         * @return string
+         */
         protected static function _tableName()
         {
-            return self::_uncamelize(get_called_class());
+            if (static::TABLE_NAME !== null)
+                return static::TABLE_NAME;
+
+            $class = get_called_class();
+            return self::_uncamelize(end($class));
         }
 
         private static function _factoryWithData(array $data)
