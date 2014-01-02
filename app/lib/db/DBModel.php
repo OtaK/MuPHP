@@ -119,6 +119,13 @@
         public static function find($criteria)
         {
             $query = new DBSelectQueryGenerator(static::_tableName());
+
+            if (static::$_enableTimestamps)
+            {
+                $query->select('UNIX_TIMESTAMP(created_at) AS `_created_at_ts`');
+                $query->select('UNIX_TIMESTAMP(updated_at) AS `_updated_at_ts`');
+            }
+
             if (is_array($criteria))
                 $query->where('id', '=', $criteria);
             else
@@ -129,7 +136,16 @@
 
             $query->limit(1);
 
-            return static::_factoryWithData($query->run());
+            $row = $query->run();
+
+            if (static::$_enableTimestamps)
+            {
+                $row['updated_at'] = (int)$row['_updated_at_ts'];
+                $row['created_at'] = (int)$row['_created_at_ts'];
+                unset($row['_created_at_ts'], $row['_updated_at_ts']);
+            }
+
+            return static::_factoryWithData($row);
         }
 
         /**
