@@ -30,10 +30,12 @@
     namespace MuPHP\DB\QueryGenerator;
 
 
-    class DBUpdateQueryGenerator
+    use MuPHP\DB\DBMan;
+
+    class DBUpdateQueryGenerator extends DBQueryGenerator
     {
         protected $_set;
-        private $_conditions;
+        protected $_conditions;
 
         /**
          * @param       $table

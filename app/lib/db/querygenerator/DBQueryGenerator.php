@@ -29,6 +29,9 @@
 
     namespace MuPHP\DB\QueryGenerator;
 
+    use MuPHP\DB\DBMan;
+    use MuPHP\DB\DBResult;
+
     abstract class DBQueryGenerator
     {
         protected $_db;

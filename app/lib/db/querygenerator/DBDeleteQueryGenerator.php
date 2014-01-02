@@ -28,6 +28,7 @@
 
     namespace MuPHP\DB\QueryGenerator;
 
+    use MuPHP\DB\DBMan;
 
     class DBDeleteQueryGenerator extends DBQueryGenerator
     {

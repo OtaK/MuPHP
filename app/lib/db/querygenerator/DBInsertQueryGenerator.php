@@ -29,6 +29,7 @@
 
     namespace MuPHP\DB\QueryGenerator;
 
+    use MuPHP\DB\DBMan;
 
     class DBInsertQueryGenerator extends DBUpdateQueryGenerator
     {
@@ -85,7 +86,7 @@
         {
             $q = "INSERT INTO {$this->_table} ";
 
-            if ($this->set === null)
+            if ($this->_set === null)
             {
                 $q .= " VALUES ";
                 foreach ($this->_values as $data)
