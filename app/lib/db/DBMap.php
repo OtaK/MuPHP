@@ -36,7 +36,7 @@
             if (!file_exists($folder))
                 return false;
 
-            foreach (glob($folder.'/*.php') as $file)
+            foreach (glob(realpath($folder).'/*.php') as $file)
             {
                 if ($file[0] === '.' || $file[0] === '_') continue;
                 require($file);
