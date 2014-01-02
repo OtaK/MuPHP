@@ -186,13 +186,27 @@
         public static function all(array $criteria = null)
         {
             $query = new DBSelectQueryGenerator(static::_tableName());
+            if (static::$_enableTimestamps)
+            {
+                $query->select('UNIX_TIMESTAMP(created_at) AS `_created_at_ts`');
+                $query->select('UNIX_TIMESTAMP(updated_at) AS `_updated_at_ts`');
+            }
+
             if ($criteria !== null)
                 foreach ($criteria as $field => $val)
                     $query->where($field, '=', $val);
 
             $result = array();
             foreach ($query->run() as $row)
+            {
+                if (static::$_enableTimestamps)
+                {
+                    $row['updated_at'] = (int)$row['_updated_at_ts'];
+                    $row['created_at'] = (int)$row['_created_at_ts'];
+                    unset($row['_created_at_ts'], $row['_updated_at_ts']);
+                }
                 $result[] = static::_factoryWithData($row);
+            }
 
             return $result;
         }
