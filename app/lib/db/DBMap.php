@@ -31,54 +31,67 @@
 
     class DBMap
     {
+        /**
+         * Syncs all models found in given folder - creates tables with spec
+         * Specify $force to true to automatically drop tables
+         * @param string $folder folder in which models can be found
+         * @param bool   $force if true, drops the tables beforehand
+         * @return bool
+         */
         public static function sync($folder, $force = false)
         {
             if (!file_exists($folder))
                 return false;
 
-            foreach (glob(realpath($folder).'/*.php') as $file)
+            foreach (glob(realpath($folder) . '/*.php') as $file)
             {
                 if ($file[0] === '.' || $file[0] === '_') continue;
                 require($file);
-                $class = substr($file, 0, strpos($file, '.'));
+                $class  = substr($file, 0, strpos($file, '.'));
                 $fields = $class::fields();
-                $table = $class::tableName();
+                $table  = $class::tableName();
                 self::_createTable($table, $fields, $force);
             }
 
             return true;
         }
 
-        private static function _createTable($name, $spec, $force = false)
+        /**
+         * Creates a table with the following spec
+         * @param string $name table name
+         * @param array  $spec spec array
+         * @param bool   $force if true, drops the tables beforehand
+         */
+        private static function _createTable($name, array $spec, $force = false)
         {
-            $q = '';
-            if ($force)
-                $q .= "DROP TABLE $name; ".PHP_EOL;
-            $q .= "CREATE TABLE IF EXISTS $name (".PHP_EOL;
+            $fieldsSpecification = array();
             foreach ($spec as $field => $fieldSpec)
             {
-                $q .= "$field {$fieldSpec['type']}";
+                $fs = "$field {$fieldSpec['type']}";
                 if ($fieldSpec['type'] === 'ENUM')
                 {
                     $enumSpec = implode("','", $fieldSpec['values']);
-                    $q .= "('$enumSpec')";
+                    $fs .= "('$enumSpec')";
                 }
-                $q .= $fieldSpec['defaultValue'] === null ? '' : ' DEFAULT '.$fieldSpec['defaultValue'];
-                $q .= $fieldSpec['allowNull'] ? ' NULL' : ' NOT NULL';
+                $fs .= $fieldSpec['defaultValue'] === null ? '' : ' DEFAULT ' . $fieldSpec['defaultValue'];
+                $fs .= $fieldSpec['allowNull'] ? ' NULL' : ' NOT NULL';
                 if ($fieldSpec['primaryKey'])
                 {
-                    $q .= ' PRIMARY KEY';
+                    $fs .= ' PRIMARY KEY';
                     if ($fieldSpec['autoIncrement'])
-                        $q .= ' AUTO_INCREMENT';
+                        $fs .= ' AUTO_INCREMENT';
                 }
                 else if ($fieldSpec['unique'])
-                    $q .= ' UNIQUE';
+                    $fs .= ' UNIQUE';
 
-                $q .= $fieldSpec['comment'] === null ? '' : ' COMMENT "'.$fieldSpec['comment'].'"';
-                $q .= ','.PHP_EOL;
+                $fs .= $fieldSpec['comment'] === null ? '' : ' COMMENT "' . $fieldSpec['comment'] . '"';
+                $fieldsSpecification[] = $fs;
             }
-            $q = substr($q, 0, -2).PHP_EOL;
-            $q .= ") ENGINE=InnoDB;";
+
+            $q = '';
+            if ($force)
+                $q .= "DROP TABLE $name; " . PHP_EOL;
+            $q .= "CREATE TABLE IF EXISTS $name (" . PHP_EOL . implode(',' . PHP_EOL, $fieldsSpecification) . ") ENGINE=InnoDB;";
 
             DBMan::get_instance()->multi_query($q);
         }
