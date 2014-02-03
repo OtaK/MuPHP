@@ -57,6 +57,31 @@
         }
 
         /**
+         * Reverse sync - Creates PHP models from MySQL DB Schema (SHOW TABLES/FIELDS)
+         * @param $destinationFolder
+         */
+        public static function reverseSync($destinationFolder)
+        {
+            if (!file_exists($destinationFolder))
+                mkdir($destinationFolder, 0775, true);
+
+            $tables = DBMan::get_instance()->query("SHOW TABLES");
+            $tables->setIterationMode(DBResult::ITERATE_NUM);
+            foreach ($tables as $table)
+            {
+                $fields = DBMan::get_instance()->query("SHOW FIELDS FROM %s", array($table[0]));
+                $spec = array();
+                foreach ($fields as $f)
+                    $spec[$f['Field']] = static::_getSpecFromShowField($f);
+            }
+        }
+
+        private static function _getSpecFromShowField(array $data)
+        {
+            // TODO return spec from db fields
+        }
+
+        /**
          * Creates a table with the following spec
          * @param string $name table name
          * @param array  $spec spec array
