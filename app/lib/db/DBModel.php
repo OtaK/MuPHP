@@ -58,6 +58,7 @@
             'allowNull'     => true,
             'primaryKey'    => false,
             'autoIncrement' => false,
+            'index'         => false,
             'unique'        => false,
             'defaultValue'  => null,
             'comment'       => null,

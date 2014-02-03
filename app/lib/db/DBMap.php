@@ -108,6 +108,8 @@
                 }
                 else if ($fieldSpec['unique'])
                     $fs .= ' UNIQUE';
+                else if ($fieldSpec['index'])
+                    $fs .= ' INDEX';
 
                 $fs .= $fieldSpec['comment'] === null ? '' : ' COMMENT "' . $fieldSpec['comment'] . '"';
                 $fieldsSpecification[] = $fs;
