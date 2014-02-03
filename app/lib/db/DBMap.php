@@ -35,7 +35,7 @@
          * Syncs all models found in given folder - creates tables with spec
          * Specify $force to true to automatically drop tables
          * @param string $folder folder in which models can be found
-         * @param bool   $force if true, drops the tables beforehand
+         * @param bool   $force  if true, drops the tables beforehand
          * @return bool
          */
         public static function sync($folder, $force = false)
@@ -69,22 +69,68 @@
             $tables->setIterationMode(DBResult::ITERATE_NUM);
             foreach ($tables as $table)
             {
-                $fields = DBMan::get_instance()->query("SHOW FIELDS FROM %s", array($table[0]));
-                $spec = array();
-                foreach ($fields as $f)
-                    $spec[$f['Field']] = static::_getSpecFromShowField($f);
+                $tableName = $table[0];
+                $modelSpec = self::_getSpecFromShowTable($tableName);
+                $pk = self::_extractPrimaryKeyFromSpec($modelSpec);
+                self::_writeModelSpec($destinationFolder, $tableName, $modelSpec, $pk);
             }
         }
 
-        private static function _getSpecFromShowField(array $data)
+        /**
+         * Return spec's primary key
+         * @param array $tableSpec
+         * @return null|string
+         */
+        private static function _extractPrimaryKeyFromSpec(array $tableSpec)
         {
-            // TODO return spec from db fields
+            foreach ($tableSpec as $field => $spec)
+                if ($spec['primaryKey'])
+                    return $field;
+
+            return null;
+        }
+
+        /**
+         * Parses raw SQL table fields to API-compatible table spec
+         * @param array $tableName
+         * @return array
+         */
+        private static function _getSpecFromShowTable(array $tableName)
+        {
+            $fields = DBMan::get_instance()->query("SHOW COLUMNS FROM %s", array($tableName));
+            $spec   = array();
+            foreach ($fields as $f)
+                $spec[$f['Field']] = static::_getSpecFromShowField($f);
+
+            return $spec;
+        }
+
+        /**
+         * Parses raw SQL field data to API-compatible field spec
+         * @param array $fieldData
+         * @return array
+         */
+        private static function _getSpecFromShowField(array $fieldData)
+        {
+            $spec = array(
+                'type'       => $fieldData['Type'],
+                'allowNull'  => $fieldData['Null'] === 'YES',
+                'primaryKey' => $fieldData['Key'] === 'PRI',
+                'index'      => $fieldData['Key'] === 'MUL',
+                'unique'     => $fieldData['Key'] === 'UNI',
+                'defaultValue' => $fieldData['Default']
+            );
+
+            if ($spec['primaryKey'] && strpos($fieldData['Extra'], 'auto_increment') !== false)
+                $spec['autoIncrement'] = true;
+
+            return $spec;
         }
 
         /**
          * Creates a table with the following spec
-         * @param string $name table name
-         * @param array  $spec spec array
+         * @param string $name  table name
+         * @param array  $spec  spec array
          * @param bool   $force if true, drops the tables beforehand
          */
         private static function _createTable($name, array $spec, $force = false)
@@ -121,5 +167,16 @@
             $q .= "CREATE TABLE IF EXISTS $name (" . PHP_EOL . implode(',' . PHP_EOL, $fieldsSpecification) . ") ENGINE=InnoDB;";
 
             DBMan::get_instance()->multi_query($q);
+        }
+
+        /**
+         * Writes a model spec to folder
+         * @param $folder
+         * @param $tableName
+         * @param $modelSpec
+         * @param $pk
+         */
+        private static function _writeModelSpec($folder, $tableName, $modelSpec, $pk)
+        {
         }
     }
