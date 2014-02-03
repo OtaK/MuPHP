@@ -19,7 +19,7 @@
     /**
      * @package    MuPHP\DB
      * @author     Mathieu AMIOT <m.amiot@otak-arts.com>
-     * @copyright  Copyright (c) 2013, Mathieu AMIOT
+     * @copyright  Copyright (c) 2014, Mathieu AMIOT
      * @version    0.1
      * @changelog
      *      0.1 : dev in progress
@@ -43,6 +43,7 @@
     abstract class DBModel
     {
         const TABLE_NAME = null;
+        static protected $__idField = 'id';
         static protected $__fieldsDefinition = array(
             'id' => array(
                 'type'          => 'UNSIGNED INT',
@@ -96,21 +97,8 @@
                 $this->updated_at = null;
             }
 
-            $this->id = null;
+            $this->id     = null;
             $this->_dirty = true;
-        }
-
-        /**
-         * Normalizes fields with default values
-         */
-        private static function _normalizeFields()
-        {
-            foreach (self::$__fieldsDefinition as &$definition)
-                $definition = array_merge(self::$__fieldDefaults, $definition);
-
-            if (static::$__fieldsDefinition !== self::$__fieldsDefinition)
-                foreach (static::$__fieldsDefinition as &$definition)
-                    $definition = array_merge(self::$__fieldDefaults, $definition);
         }
 
         /**
@@ -120,12 +108,14 @@
         public static function fields()
         {
             self::_normalizeFields();
+
             return array_merge(self::$__fieldsDefinition, static::$__fieldsDefinition);
         }
 
         /**
          * Finds a DAO-enabled object with given criteria
          * @param array|int|string $criteria
+         * @return DBModel
          */
         public static function find($criteria)
         {
@@ -138,7 +128,7 @@
             }
 
             if (is_array($criteria))
-                $query->where('id', '=', $criteria);
+                $query->where(static::$__idField, '=', $criteria);
             else
             {
                 foreach ($criteria as $field => $val)
@@ -156,7 +146,7 @@
                 unset($row['_created_at_ts'], $row['_updated_at_ts']);
             }
 
-            $obj = static::_factoryWithData($row);
+            $obj         = static::_factoryWithData($row);
             $obj->_dirty = false;
 
             return $obj;
@@ -174,38 +164,6 @@
             $class = get_called_class();
 
             return self::_uncamelize(end($class));
-        }
-
-        /**
-         * Uncamelizes a string. MyExample => my_example
-         * Used for ModelName => table_name translation here
-         * @param $str
-         * @return string
-         */
-        protected static function _uncamelize($str)
-        {
-            $str    = lcfirst($str);
-            $lc     = strtolower($str);
-            $result = '';
-            $length = strlen($str);
-            for ($i = 0; $i < $length; ++$i)
-                $result .= ($str[$i] == $lc[$i] ? '' : '_') . $lc[$i];
-
-            return $str;
-        }
-
-        /**
-         * Creates a model initiated with given data
-         * @param array $data
-         */
-        private static function _factoryWithData(array $data)
-        {
-            $class = get_called_class();
-            $obj   = new $class();
-            foreach ($data as $field => &$val)
-                $obj->{$field} = $val;
-
-            return $obj;
         }
 
         /**
@@ -235,9 +193,9 @@
                     $row['created_at'] = (int)$row['_created_at_ts'];
                     unset($row['_created_at_ts'], $row['_updated_at_ts']);
                 }
-                $obj = static::_factoryWithData($row);
+                $obj         = static::_factoryWithData($row);
                 $obj->_dirty = false;
-                $result[] = $obj;
+                $result[]    = $obj;
             }
 
             return $result;
@@ -251,7 +209,7 @@
         public static function destroy($id)
         {
             $query = new DBDeleteQueryGenerator(static::tableName());
-            $query->where('id', '=', $id);
+            $query->where(static::$__idField, '=', $id);
 
             return $query->run();
         }
@@ -271,6 +229,34 @@
         }
 
         /**
+         * Instanciates an unsaved object
+         * @param array $data
+         * @return DBModel
+         */
+        public static function build(array $data)
+        {
+            return static::_factoryWithData($data);
+        }
+
+        /**
+         * Uncamelizes a string. MyExample => my_example
+         * Used for ModelName => table_name translation here
+         * @param $str
+         * @return string
+         */
+        protected static function _uncamelize($str)
+        {
+            $str    = lcfirst($str);
+            $lc     = strtolower($str);
+            $result = '';
+            $length = strlen($str);
+            for ($i = 0; $i < $length; ++$i)
+                $result .= ($str[$i] == $lc[$i] ? '' : '_') . $lc[$i];
+
+            return $str;
+        }
+
+        /**
          * Camelizes a string. my_example => MyExample
          * Used for table_name => ModelName translation here
          * @param $str
@@ -279,6 +265,77 @@
         protected static function _camelize($str)
         {
             return str_replace(' ', '', ucwords(str_replace('_', ' ', $str)));
+        }
+
+        /**
+         * Normalizes fields with default values
+         */
+        private static function _normalizeFields()
+        {
+            foreach (self::$__fieldsDefinition as &$definition)
+                $definition = array_merge(self::$__fieldDefaults, $definition);
+
+            if (static::$__fieldsDefinition !== self::$__fieldsDefinition)
+                foreach (static::$__fieldsDefinition as &$definition)
+                    $definition = array_merge(self::$__fieldDefaults, $definition);
+        }
+
+        /**
+         * Creates a model initiated with given data
+         * @param array $data
+         * @return DBModel
+         */
+        private static function _factoryWithData(array $data)
+        {
+            $class = get_called_class();
+            /** @var DBModel $obj */
+            $obj   = new $class();
+            foreach ($data as $field => &$val)
+                $obj->{$field} = $val;
+
+            return $obj;
+        }
+
+        /**
+         * Saves current DAO model.
+         * Inserts if new, or updates if already in DB.
+         * @return $this
+         */
+        public function save()
+        {
+            $insert    = $this->{static::$__idField} === null;
+            $className = $insert ? "DBInsertQueryGenerator" : "DBUpdateQueryGenerator";
+            /** @var DBInsertQueryGenerator|DBUpdateQueryGenerator $query */
+            $query = new $className(static::tableName());
+            foreach ($this->_values as $name => $var)
+            {
+                if ($name !== static::$__idField)
+                    $query->set($name, $var);
+            }
+
+            if (!$insert)
+            {
+                $query->where(static::$__idField, '=', $this->{static::$__idField});
+                if (static::$_enableTimestamps)
+                {
+                    $this->updated_at = time();
+                    $query->set('updated_at', 'FROM_UNIXTIME(' . $this->updated_at . ')', false);
+                }
+            }
+            else if (static::$_enableTimestamps)
+            {
+                $this->created_at = time();
+                $query->set('created_at', 'FROM_UNIXTIME(' . $this->created_at . ')', false);
+            }
+
+            $query->run();
+
+            if ($insert)
+                $this->{static::$__idField} = $query->getInsertId();
+
+            $this->_dirty = false;
+
+            return $this;
         }
 
         /**
@@ -315,50 +372,8 @@
             if (isset($this->_fields[$name]))
             {
                 $this->_values[$name] = $value;
-                $this->_dirty = true;
+                $this->_dirty         = true;
             }
-        }
-
-        /**
-         * Saves current DAO model.
-         * Inserts if new, or updates if already in DB.
-         * @return $this
-         */
-        public function save()
-        {
-            $insert    = $this->id === null;
-            $className = $insert ? "DBInsertQueryGenerator" : "DBUpdateQueryGenerator";
-            /** @var DBInsertQueryGenerator|DBUpdateQueryGenerator $query */
-            $query = new $className(static::tableName());
-            foreach ($this->_values as $name => $var)
-            {
-                if ($name !== 'id')
-                    $query->set($name, $var);
-            }
-
-            if (!$insert)
-            {
-                $query->where('id', '=', $this->id);
-                if (static::$_enableTimestamps)
-                {
-                    $this->updated_at = time();
-                    $query->set('updated_at', 'FROM_UNIXTIME(' . $this->updated_at . ')', false);
-                }
-            }
-            else if (static::$_enableTimestamps)
-            {
-                $this->created_at = time();
-                $query->set('created_at', 'FROM_UNIXTIME(' . $this->created_at . ')', false);
-            }
-
-            $query->run();
-
-            if ($insert)
-                $this->id = $query->getInsertId();
-
-            $this->_dirty = false;
-
-            return $this;
         }
 
         /**
