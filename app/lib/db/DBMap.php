@@ -115,11 +115,21 @@
             $spec = array(
                 'type'       => $fieldData['Type'],
                 'allowNull'  => $fieldData['Null'] === 'YES',
-                'primaryKey' => $fieldData['Key'] === 'PRI',
-                'index'      => $fieldData['Key'] === 'MUL',
-                'unique'     => $fieldData['Key'] === 'UNI',
                 'defaultValue' => $fieldData['Default']
             );
+
+            switch ($fieldData['Key'])
+            {
+                case 'PRI':
+                    $spec['primaryKey'] = true;
+                    break;
+                case 'MUL':
+                    $spec['index'] = true;
+                    break;
+                case 'UNI':
+                    $spec['unique'] = true;
+                    break;
+            }
 
             if ($spec['primaryKey'] && strpos($fieldData['Extra'], 'auto_increment') !== false)
                 $spec['autoIncrement'] = true;
@@ -163,10 +173,10 @@
 
             $q = '';
             if ($force)
-                $q .= "DROP TABLE $name; " . PHP_EOL;
+                DBMan::get_instance()->query("DROP TABLE $name");
             $q .= "CREATE TABLE IF EXISTS $name (" . PHP_EOL . implode(',' . PHP_EOL, $fieldsSpecification) . ") ENGINE=InnoDB;";
 
-            DBMan::get_instance()->multi_query($q);
+            DBMan::get_instance()->query($q);
         }
 
         /**
@@ -175,8 +185,10 @@
          * @param $tableName
          * @param $modelSpec
          * @param $pk
+         * @todo
          */
         private static function _writeModelSpec($folder, $tableName, $modelSpec, $pk)
         {
+
         }
     }
