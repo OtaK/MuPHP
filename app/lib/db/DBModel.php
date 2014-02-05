@@ -147,7 +147,7 @@
                 unset($row['_created_at_ts'], $row['_updated_at_ts']);
             }
 
-            $obj         = static::_factoryWithData($row);
+            $obj         = static::_unpackModel($row);
             $obj->_dirty = false;
 
             return $obj;
@@ -194,7 +194,7 @@
                     $row['created_at'] = (int)$row['_created_at_ts'];
                     unset($row['_created_at_ts'], $row['_updated_at_ts']);
                 }
-                $obj         = static::_factoryWithData($row);
+                $obj         = static::_unpackModel($row);
                 $obj->_dirty = false;
                 $result[]    = $obj;
             }
@@ -223,7 +223,7 @@
         public static function create(array $data)
         {
             /** @var DBModel $obj */
-            $obj = static::_factoryWithData($data);
+            $obj = static::_unpackModel($data);
             $obj->save();
 
             return $obj;
@@ -236,7 +236,7 @@
          */
         public static function build(array $data)
         {
-            return static::_factoryWithData($data);
+            return static::_unpackModel($data);
         }
 
         /**
@@ -250,11 +250,10 @@
             $str    = lcfirst($str);
             $lc     = strtolower($str);
             $result = '';
-            $length = strlen($str);
-            for ($i = 0; $i < $length; ++$i)
-                $result .= ($str[$i] == $lc[$i] ? '' : '_') . $lc[$i];
+            for ($i = 0, $l = strlen($str); $i < $l; ++$i)
+                $result .= ($str[$i] === $lc[$i] ? '' : '_') . $lc[$i];
 
-            return $str;
+            return $result;
         }
 
         /**
@@ -283,19 +282,39 @@
 
         /**
          * Creates a model initiated with given data
-         * @param array $data
+         * @param array $data hash of data to assign
          * @return DBModel
          */
-        private static function _factoryWithData(array $data)
+        private static function _unpackModel(array $data)
         {
             $class = get_called_class();
             /** @var DBModel $obj */
             $obj   = new $class();
-            foreach ($data as $field => &$val)
-                $obj->{$field} = $val;
+            $obj->_massAssign($data);
 
             return $obj;
         }
+
+        /**
+         * Mass assignement method with optional field assignement filtering
+         * @param array $data hash of data to assign
+         * @param array $fields optional list of fields to assign
+         * @return $this
+         */
+        private function _massAssign(array $data, array $fields = array())
+        {
+            $fn = count($fields) > 0;
+            foreach ($data as $field => &$val)
+            {
+                if ($fn && in_array($field, $fields, true))
+                    continue;
+
+                $this->{$field} = $val;
+            }
+
+            return $this;
+        }
+
 
         /**
          * Saves current DAO model.
