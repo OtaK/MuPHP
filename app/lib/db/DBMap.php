@@ -185,10 +185,28 @@
          * @param $tableName
          * @param $modelSpec
          * @param $pk
-         * @todo
          */
         private static function _writeModelSpec($folder, $tableName, $modelSpec, $pk)
         {
+            $classTpl = '
+                class %MODEL_CLASS% extends \\MuPHP\\DB\\DBModel
+                {
+                    const TABLE_NAME = \'%TABLE_NAME%\';
+                    static protected $__idField = \'%TABLE_PK%\';
+                    static protected $__fieldsDefinition = \'%MODEL_SPEC%\';
+                    static protected $__enableTimestamps = true;
+                }
+            ';
 
+            $modelClass = DBModel::Camelize($tableName);
+            $replacements = array(
+                '%MODEL_CLASS%' => $modelClass,
+                '%TABLE_NAME%' => $tableName,
+                '%TABLE_PK%' => $pk,
+                '%MODEL_SPEC%' => $modelSpec
+            );
+
+            $modelClassContents = str_replace(array_keys($replacements), $replacements, $classTpl);
+            file_put_contents($folder.'/'.$modelClass.'.php', $modelClassContents);
         }
     }
