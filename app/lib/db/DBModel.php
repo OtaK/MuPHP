@@ -164,7 +164,7 @@
 
             $class = get_called_class();
 
-            return self::_uncamelize(end($class));
+            return self::Uncamelize(end($class));
         }
 
         /**
@@ -245,7 +245,7 @@
          * @param $str
          * @return string
          */
-        protected static function _uncamelize($str)
+        public static function Uncamelize($str)
         {
             $str    = lcfirst($str);
             $lc     = strtolower($str);
@@ -262,7 +262,7 @@
          * @param $str
          * @return string
          */
-        protected static function _camelize($str)
+        public static function Camelize($str)
         {
             return str_replace(' ', '', ucwords(str_replace('_', ' ', $str)));
         }
