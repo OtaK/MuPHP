@@ -52,7 +52,7 @@
                 'autoIncrement' => true
             )
         );
-        static protected $_enableTimestamps = true;
+        static protected $__enableTimestamps = true;
         static private $__fieldDefaults = array(
             'type'          => 'VARCHAR(255)',
             'allowNull'     => true,
@@ -91,7 +91,7 @@
             foreach ($this->_fields as $fieldName => $spec)
                 $this->_values[$fieldName] = $spec['defaultValue'];
 
-            if (static::$_enableTimestamps)
+            if (static::$__enableTimestamps)
             {
                 $this->_fields    = array_merge($this->_fields, static::$__timestampsDefinition);
                 $this->created_at = time();
@@ -122,7 +122,7 @@
         {
             $query = new DBSelectQueryGenerator(static::tableName());
 
-            if (static::$_enableTimestamps)
+            if (static::$__enableTimestamps)
             {
                 $query->select('UNIX_TIMESTAMP(created_at) AS `_created_at_ts`');
                 $query->select('UNIX_TIMESTAMP(updated_at) AS `_updated_at_ts`');
@@ -140,7 +140,7 @@
 
             $row = $query->run();
 
-            if (static::$_enableTimestamps)
+            if (static::$__enableTimestamps)
             {
                 $row['updated_at'] = (int)$row['_updated_at_ts'];
                 $row['created_at'] = (int)$row['_created_at_ts'];
@@ -175,7 +175,7 @@
         public static function all(array $criteria = null)
         {
             $query = new DBSelectQueryGenerator(static::tableName());
-            if (static::$_enableTimestamps)
+            if (static::$__enableTimestamps)
             {
                 $query->select('UNIX_TIMESTAMP(created_at) AS `_created_at_ts`');
                 $query->select('UNIX_TIMESTAMP(updated_at) AS `_updated_at_ts`');
@@ -188,7 +188,7 @@
             $result = array();
             foreach ($query->run() as $row)
             {
-                if (static::$_enableTimestamps)
+                if (static::$__enableTimestamps)
                 {
                     $row['updated_at'] = (int)$row['_updated_at_ts'];
                     $row['created_at'] = (int)$row['_created_at_ts'];
@@ -336,13 +336,13 @@
             if (!$insert)
             {
                 $query->where(static::$__idField, '=', $this->{static::$__idField});
-                if (static::$_enableTimestamps)
+                if (static::$__enableTimestamps)
                 {
                     $this->updated_at = time();
                     $query->set('updated_at', 'FROM_UNIXTIME(' . $this->updated_at . ')', false);
                 }
             }
-            else if (static::$_enableTimestamps)
+            else if (static::$__enableTimestamps)
             {
                 $this->created_at = time();
                 $query->set('created_at', 'FROM_UNIXTIME(' . $this->created_at . ')', false);
